@@ -1,6 +1,7 @@
-
-[7.497] : ---------Program started---------
-[7.497] : Loading Pineapple-Studio/API/Bedrock
-[7.498] : Successfully loaded Pineapple-Studio/API/Bedrock
-[7.498] : Loading Pineapple-Studio/API/Logger.lua
-[7.498] : Successfully loaded Pineapple-Studio/API/Logger.lua
+[12.038] : ---------Program started---------
+[12.038] : Loading Pineapple-Studio/API/Bedrock
+[12.038] : Successfully loaded Pineapple-Studio/API/Bedrock
+[12.038] : Loading Pineapple-Studio/API/Logger.lua
+[12.038] : Successfully loaded Pineapple-Studio/API/Logger.lua
+[12.038] : Loading Pineapple-Studio/API/SharedPreferences
+[12.038] : Successfully loaded Pineapple-Studio/API/SharedPreferences
