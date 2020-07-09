@@ -1,0 +1,71 @@
+function SceneTransitionAnimation(program, oldView, newView, onFrame)
+  local self = {}
+  
+  self.duration = 3
+  
+  self.onFrame = onFrame
+  self.oldSceneView = oldView
+  if type(self.oldSceneView) == "string" then
+    local f = fs.open(program.ProgramPath.."/Views/"..self.oldSceneView..".view", "r")
+    if f then
+      local serializedView = f.readAll()
+      f.close()
+      local view = textutils.unserialize(serializedView)
+      self.oldSceneView = View:InitialiseFile(self, view, "View1")
+    end
+  end
+  
+  self.newSceneView = newView
+  if type(self.newSceneView) == "string" then
+    local f = fs.open(program.ProgramPath.."/Views/"..self.newSceneView..".view", "r")
+    if f then
+      local serializedView = f.readAll()
+      f.close()
+      local view = textutils.unserialize(serializedView)
+      self.newSceneView = View:InitialiseFile(program, view, "View2")
+    end
+  end
+  
+  function self.onAnimationPrepare()
+    local mergedView = self.oldSceneView
+    for k, v in pairs(self.newSceneView.Children) do
+      v.X = v.X + 51--mergedView.X + mergedView.Width - 2
+    end
+  end
+  
+  function self.onAnimationEnd()
+    
+  end
+  
+  function self.animate()
+    self.onAnimationPrepare()
+  
+    local startTime = os.clock()
+    local previousFrame = startTime
+    local frame
+    
+    frame = function()
+      local time = os.clock()
+      local totalTime = time - startTime
+      local isLast = totalTime >= self.duration
+
+      if isLast then
+        program.View:ForceDraw()
+        
+        if self.onAnimationEnd then
+          self.onAnimationEnd()
+        end
+      else
+        program.View:ForceDraw()
+        program:StartTimer(function()
+          if self.onFrame then self.onFrame(self, self.duration, totalTime) end
+          frame()
+        end, 0.05)
+      end
+		end
+    
+	frame()
+  end
+  
+  return self
+end

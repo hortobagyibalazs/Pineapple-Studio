@@ -1,6 +1,70 @@
 {
   Children = {
-  
+    {
+      Name = "LogoView",
+      Type = "ImageView",
+      Width = 7,
+      Height = 5,
+      X = "75%,-4",
+      Y = 2
+    },
+    {
+      Type = "Label",
+      Text = "Pineapple Studio",
+      X = "75%,-8",
+      Y = 8
+    },
+    {
+      Type = "Label",
+      Text = "Version 0.1",
+      X = "75%,-6",
+      Y = 9
+    },
+    {
+      Name = "CreateButton",
+      Type = "Button",
+      Text = "Create",
+      X = "75%,-4",
+      Y = 12,
+      BackgroundColour = "transparent",
+      ActiveBackgroundColour = "transparent",
+      ActiveTextColour = "orange"
+    },
+    {
+      Type = "Button",
+      Text = "Open",
+      X = "75%,-3",
+      Y = 14,
+      BackgroundColour = "transparent",
+      ActiveBackgroundColour = "transparent",
+      ActiveTextColour = "orange"
+    },
+    {
+      Type = "Button",
+      Text = "Settings",
+      X = "75%,-5",
+      Y = 16,
+      BackgroundColour = "transparent",
+      ActiveBackgroundColour = "transparent",
+      ActiveTextColour = "orange"
+    },
+    {
+      Type = "Button",
+      Text = "Quit",
+      X = "75%,-3",
+      Y = 18,
+      BackgroundColour = "transparent",
+      ActiveBackgroundColour = "transparent",
+      ActiveTextColour = "orange"
+    },
+    {
+      Type = "Separator",
+      X = "50%",
+      Y = 2,
+      Width = 1,
+      Height = "100%,-2",
+      Colour = "lightGrey"
+    }
   },
   BackgroundColour = "white"
 }

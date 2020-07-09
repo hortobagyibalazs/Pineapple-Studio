@@ -1,0 +1,39 @@
+function ExtensionManager(program)
+  local self = {}
+  
+  local extensions = {}
+  local lastScene = nil
+  
+  function self.addExtension(extension)
+    Logger.log("Registered extension '"..extension.getName().."'")
+    table.insert(extensions, extension)
+  end
+  
+  function self.removeExtension(extension)
+    table.remove(extensions, extension)
+  end
+  
+  function self.enableExtension(extension)
+    
+  end
+  
+  function self.disableExtension(extension)
+  
+  end
+  
+  function self.notify()
+    local scene = program.sceneManager.getScene()
+    
+    if lastScene ~= scene then
+      lastScene = scene
+      
+      for k, v in pairs(extensions) do
+        if v.enabled and v.onSceneLoad and v.handleSceneLoad(scene) then
+          v.onSceneLoad(scene)
+        end
+      end
+    end
+  end
+  
+  return self
+end

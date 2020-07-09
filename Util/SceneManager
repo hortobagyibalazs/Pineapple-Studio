@@ -5,6 +5,8 @@ function SceneManager(programInst)
   local program = programInst
   
   self.setScene = function(newScene)
+    if newScene == nil then return end
+  
     Logger.log("Set scene "..newScene.getTag())
     if currentScene ~= newScene then
       if currentScene then
@@ -16,12 +18,34 @@ function SceneManager(programInst)
         end
       end
       currentScene = newScene
-      currentScene.active = true
       if currentScene ~= nil then
-        program:LoadView(currentScene.getViewName())
-        currentScene.view = program.View
-        if currentScene.onStart then
-          currentScene.onStart(program)
+        currentScene.active = true
+        
+        if not animation then
+          program:LoadView(currentScene.getViewName())
+          currentScene.view = program.View
+          
+          if currentScene.onStart then
+            currentScene.onStart(program)
+          end
+          
+          if self.onSceneChange then
+            self.onSceneChange(currentScene)
+          end
+        else
+          animation.animate()
+          animation.onAnimationEnd = function() 
+            program:LoadView(currentScene.getViewName())
+            currentScene.view = program.View 
+            
+            if currentScene.onStart then
+              currentScene.onStart(program)
+            end
+            
+            if self.onSceneChange then
+              self.onSceneChange(currentScene)
+            end
+          end
         end
       end
     end

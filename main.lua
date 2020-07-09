@@ -1,4 +1,7 @@
 local programPath = shell.dir()
+local VERSION = 0.1
+
+-- API loading functionality
 local totalApis = 0
 local loadedApis = 0
 
@@ -13,9 +16,11 @@ local function isBlacklisted(path, blacklist)
 end
 
 local function loadApis(path, loadMethod, blacklist)
+  local results = {}
+  
   if fs.isDir(path) and not isBlacklisted(path, blacklist) then
     for k, v in pairs(fs.list(path)) do
-      loadApis(path.."/"..v, loadMethod, blacklist)
+      table.insert(results, loadApis(path.."/"..v, loadMethod, blacklist))
     end
   else
     if not isBlacklisted(path, blacklist) then
@@ -24,12 +29,17 @@ local function loadApis(path, loadMethod, blacklist)
       local loaded = loadMethod(path)
       if loaded ~= false then
         loadedApis = loadedApis + 1
+        if loaded ~= nil then
+          table.insert(results, loaded)
+        end
         Logger.log("Successfully loaded "..path)
       else
         Logger.log("Error: failed to load "..path)
       end
     end
   end
+  
+  return results
 end
 
 local ApiFolders = {
@@ -41,6 +51,9 @@ local ApiFolders = {
   },
   {
     "Scene", dofile
+  },
+  {
+    "Extension", dofile
   }
 }
 
@@ -55,21 +68,46 @@ Logger.FILE_PATH = programPath
 Logger.clear()
 Logger.log("---------Program started---------")
 
+local extensions = {}
+
 for k, v in pairs(ApiFolders) do
   local path = v[1]
   local loadMethod = v[2]
-  loadApis(programPath.."/"..path, loadMethod, apiNoLoad)
+  local results = loadApis(programPath.."/"..path, loadMethod, apiNoLoad, {})
+  
+  if path == "Extension" and results then
+    for k, v in pairs(results) do
+      for i, extension in pairs(v) do
+        if type(extension) == "table" then
+          table.insert(extensions, extension)
+        end
+      end
+    end
+  end
 end
 Logger.log("Loaded "..loadedApis.."/"..totalApis.." APIs")
 
+-- Initialize main services
 local program = Bedrock:Initialise(programPath)
+program.version = VERSION
 
 program.sharedPreferences = SharedPreferences(program)
 program.sceneManager = SceneManager(program)
 program.projectManager = ProjectManager(program)
+program.extensionManager = ExtensionManager(program)
+
+for k, extension in pairs(extensions) do
+  program.extensionManager.addExtension(extension)
+end
+
+program.sceneManager.onSceneChange = function(scene)
+  program.extensionManager.notify()
+end
 
 program.sharedPreferences.edit("firstRun", false)
 
+
+-- Enter program's main loop
 program:Run(function()
   program.projectManager.addProjectChangeListener(function(project)
     if project ~= nil then
@@ -85,6 +123,6 @@ program:Run(function()
     end
   end]]
   
-  program.sceneManager.setScene(MainMenuScene(program))
-  program.projectManager.open(Project("", "Test"))
+  program.sceneManager.setScene(ProjectWizardScene(program))
+  --program.projectManager.open(Project("", "Test"))
 end)

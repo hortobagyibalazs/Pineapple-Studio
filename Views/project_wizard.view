@@ -1,0 +1,43 @@
+{
+  Children = {
+    {
+      Type = "Label",
+      Text = "New Project",
+      X = 2,
+      Y = 2
+    },
+    {
+      Type = "Button",
+      Text = "Done",
+      X = "100%,-6",
+      Y = "100%,-1"
+    },
+    {
+      Name = "CancelButton",
+      Type = "Button",
+      Text = "Cancel",
+      X = "100%,-15",
+      Y = "100%,-1"
+    },
+    {
+      Name = "WizardsListView",
+      Type = "ListView",
+      X = 2,
+      Y = 4,
+      Height = "100%,-6",
+      Width = 15,
+      BackgroundColour = "red",
+      CanSelect = true
+    },
+    {
+      Name = "WizardContentView",
+      Type = "ScrollView",
+      X = 18,
+      Y = 4,
+      Width = "100%,-18",
+      Height = "100%,-6",
+      BackgroundColour = "red"
+    }
+  },
+  BackgroundColour = "white"
+}

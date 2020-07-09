@@ -1,0 +1,34 @@
+function ProjectWizardScene(program)
+  local self = Scene("project_wizard", program, "ProjectWizardScene")
+  
+  local wizards = {}
+  
+  function self.onStart()
+    self.view:GetObject("CancelButton").OnClick = function(_, event, side)
+      if side == 1 then
+        program.sceneManager.setScene(MainMenuScene(program))
+      end
+    end
+    
+    self.view:GetObject("WizardsListView").OnSelect = function(_, item)
+      self.view:GetObject("WizardContentView"):RemoveAllObjects()
+      self.view:GetObject("WizardContentView"):AddObject(wizards[item].View)
+    end
+  end
+  
+  self.loadComponents({
+    ["ProjectWizard"] = {
+      ["add"] = function(label, category, view)
+        wizards[label] = {["Category"] = category, ["View"] = view}
+        table.insert(self.view:GetObject("WizardsListView").Items, {
+          ["Text"] = label,
+          ["Toggle"] = false,
+          ["Group"] = 1
+        })
+        self.view:GetObject("WizardsListView"):UpdateItems()
+      end
+    }
+  })
+  
+  return self
+end

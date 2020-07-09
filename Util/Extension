@@ -1,0 +1,28 @@
+function Extension(_name)
+  local self = {}
+  
+  local name = _name
+  self.enabled = true
+  
+  function self.getName()
+    return name
+  end
+  
+  function self.onSceneLoad(scene)
+  
+  end
+  
+  function self.onSceneUnload(scene)
+  
+  end
+  
+  function self.handleSceneLoad(scene)
+    return true
+  end
+  
+  function self.handleSceneUnload(scene)
+    return false
+  end
+  
+  return self
+end

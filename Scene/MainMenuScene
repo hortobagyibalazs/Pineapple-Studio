@@ -2,7 +2,14 @@ function MainMenuScene(program)
   local self = Scene("main_menu", program, "MainMenuScene")
   
   function self.onStart()
-
+    self.view:GetObject("LogoView").Path = program.ProgramPath.."/Images/logo.nft"
+    
+    self.view:GetObject("CreateButton").OnClick = function(_, event, side)
+      if side == 1 then
+        local newScene = ProjectWizardScene(program)
+        program.sceneManager.setScene(newScene)
+      end
+    end
   end
   
   return self

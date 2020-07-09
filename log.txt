@@ -1,7 +1,32 @@
-[12.038] : ---------Program started---------
-[12.038] : Loading Pineapple-Studio/API/Bedrock
-[12.038] : Successfully loaded Pineapple-Studio/API/Bedrock
-[12.038] : Loading Pineapple-Studio/API/Logger.lua
-[12.038] : Successfully loaded Pineapple-Studio/API/Logger.lua
-[12.038] : Loading Pineapple-Studio/API/SharedPreferences
-[12.038] : Successfully loaded Pineapple-Studio/API/SharedPreferences
+[9.708] : ---------Program started---------
+[9.708] : Loading Pineapple-Studio/API/Bedrock
+[9.709] : Successfully loaded Pineapple-Studio/API/Bedrock
+[9.709] : Loading Pineapple-Studio/Util/Extension
+[9.709] : Successfully loaded Pineapple-Studio/Util/Extension
+[9.709] : Loading Pineapple-Studio/Util/ExtensionManager
+[9.709] : Successfully loaded Pineapple-Studio/Util/ExtensionManager
+[9.709] : Loading Pineapple-Studio/Util/Project
+[9.709] : Successfully loaded Pineapple-Studio/Util/Project
+[9.709] : Loading Pineapple-Studio/Util/ProjectManager
+[9.709] : Successfully loaded Pineapple-Studio/Util/ProjectManager
+[9.709] : Loading Pineapple-Studio/Util/RandomKeyGenerator
+[9.709] : Successfully loaded Pineapple-Studio/Util/RandomKeyGenerator
+[9.709] : Loading Pineapple-Studio/Util/Scene
+[9.709] : Successfully loaded Pineapple-Studio/Util/Scene
+[9.709] : Loading Pineapple-Studio/Util/SceneManager
+[9.709] : Successfully loaded Pineapple-Studio/Util/SceneManager
+[9.709] : Loading Pineapple-Studio/Util/SceneTransitionAnimation
+[9.709] : Successfully loaded Pineapple-Studio/Util/SceneTransitionAnimation
+[9.709] : Loading Pineapple-Studio/Util/SharedPreferences
+[9.709] : Successfully loaded Pineapple-Studio/Util/SharedPreferences
+[9.709] : Loading Pineapple-Studio/Scene/MainMenuScene
+[9.709] : Successfully loaded Pineapple-Studio/Scene/MainMenuScene
+[9.709] : Loading Pineapple-Studio/Scene/ProjectViewScene
+[9.709] : Successfully loaded Pineapple-Studio/Scene/ProjectViewScene
+[9.709] : Loading Pineapple-Studio/Scene/ProjectWizardScene
+[9.709] : Successfully loaded Pineapple-Studio/Scene/ProjectWizardScene
+[9.709] : Loading Pineapple-Studio/Extension/TestExtension
+[9.709] : Successfully loaded Pineapple-Studio/Extension/TestExtension
+[9.709] : Loaded 14/14 APIs
+[9.71] : Registered extension 'Test ext.'
+[9.71] : Set scene ProjectWizardScene
