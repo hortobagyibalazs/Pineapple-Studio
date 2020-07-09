@@ -1,0 +1,70 @@
+function ProjectViewScene(program)
+  local self = Scene("project", program, "ProjectViewScene")
+  
+  local fileViewers = {}
+  
+  function self.onStart()
+    self.getComponent("MenuBar").addMenu("File")
+    self.getComponent("MenuBar").addMenu("File")
+    self.getComponent("MenuBar").addMenu("View")
+    self.getComponent("MenuBar").addMenu("Edit")
+    self.getComponent("MenuBar").addMenu("Run")  
+    
+    self.getComponent("FileViewer").handleFileType("lua", function(path) 
+      local view = {
+        ["Type"] = "View",
+        ["X"] = 2,
+        ["Y"] = 2,
+        ["Width"] = 20,
+        ["Height"] = 10,
+        ["BackgroundColour"] = "cyan"
+      }
+      
+      return view
+    end)
+  end
+  
+  self.loadComponents({
+    ["MenuBar"] = {
+      ["addMenu"] = function(label)      
+        local xCoords = {}
+        for k, v in pairs(self.view:GetObject("MenuBar").Children) do
+          table.insert(xCoords, {v.X, v.Width})
+          if v.Name == label.."Menu" then
+            return
+          end
+        end
+        table.sort(xCoords, function(e1, e2) return e1[1] < e2[1] end)
+        local lastMenu = xCoords[#xCoords]
+        if lastMenu == nil or #lastMenu == 0 then
+          lastMenu = {[1] = 1, [2] = 0}
+        end
+        
+        Logger.log("Add menu '"..label.."' to MenuBar")
+        self.view:GetObject("MenuBar"):AddObject({
+          ["Type"] = "Button",
+          ["Name"] = label.."Menu",
+          ["Text"] = label,
+          ["X"] = lastMenu[1] + lastMenu[2],
+          ["Y"] = 1,
+          ["Height"] = 1,
+          ["Width"] = #label + 2
+        })
+      end,
+      ["addMenuItem"] = function(menu, item, onClick)
+      
+      end
+    },
+    
+    ["FileViewer"] = {
+      ["handleFileType"] = function(type, getViewOnFileOpen)
+        fileViewers[type] = getViewOnFileOpen
+      end,
+      ["openFile"] = function(path)
+      
+      end
+    }
+  })
+  
+  return self
+end

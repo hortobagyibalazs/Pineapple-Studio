@@ -1,26 +1,54 @@
-local function loadApis(path)
-  if fs.isDir(path) then
+local programPath = shell.dir()
+local totalApis = 0
+local loadedApis = 0
+
+local function isBlacklisted(path, blacklist)
+  for k, v in pairs(blacklist) do
+    if k == path or v == path then
+      return true
+    end
+  end
+  
+  return false
+end
+
+local function loadApis(path, loadMethod, blacklist)
+  if fs.isDir(path) and not isBlacklisted(path, blacklist) then
     for k, v in pairs(fs.list(path)) do
-      loadApis(path.."/"..v)
+      loadApis(path.."/"..v, loadMethod, blacklist)
     end
   else
-    Logger.log("Loading "..path)
-    local loaded = os.loadAPI(path)
-    if loaded ~= nil then
-      Logger.log("Successfully loaded "..path)
-    else
-      Logger.log("Error: failed to load "..path)
+    if not isBlacklisted(path, blacklist) then
+      totalApis = totalApis + 1
+      Logger.log("Loading "..path)
+      local loaded = loadMethod(path)
+      if loaded ~= false then
+        loadedApis = loadedApis + 1
+        Logger.log("Successfully loaded "..path)
+      else
+        Logger.log("Error: failed to load "..path)
+      end
     end
   end
 end
 
 local ApiFolders = {
-  "API"
+  {
+    "API", os.loadAPI
+  },
+  {
+    "Util", dofile
+  },
+  {
+    "Scene", dofile
+  }
 }
 
-local programPath = shell.dir()
+local apiNoLoad = {
+  programPath.."/Util/Logger"
+}
 
-dofile(programPath.."/API/Logger.lua")
+dofile(programPath.."/Util/Logger")
 
 Logger.ENABLED = true
 Logger.FILE_PATH = programPath
@@ -28,16 +56,35 @@ Logger.clear()
 Logger.log("---------Program started---------")
 
 for k, v in pairs(ApiFolders) do
-  loadApis(programPath.."/"..v)
+  local path = v[1]
+  local loadMethod = v[2]
+  loadApis(programPath.."/"..path, loadMethod, apiNoLoad)
 end
+Logger.log("Loaded "..loadedApis.."/"..totalApis.." APIs")
 
-local Program = Bedrock:Initialise(programPath)
+local program = Bedrock:Initialise(programPath)
 
-local sharedPreferences = SharedPreferences.SharedPreferences(Program)
+program.sharedPreferences = SharedPreferences(program)
+program.sceneManager = SceneManager(program)
+program.projectManager = ProjectManager(program)
 
-Program.sharedPreferences = sharedPreferences
+program.sharedPreferences.edit("firstRun", false)
 
-sharedPreferences:edit("firstRun", false)
-
-Program:LoadView("main")
-Program:Run()
+program:Run(function()
+  program.projectManager.addProjectChangeListener(function(project)
+    if project ~= nil then
+      program.sceneManager.setScene(ProjectViewScene(program))
+    end
+  end)
+  
+  --[[if program.sharedPreferences.getOrDefault("openLastProjectOnStartup", false) then
+    local lastProject = program.sharedPreferences.getOrDefault("lastProject", nil)
+    if lastProject then
+      local project = Project(lastProject["Root"], lastProject["Name"])
+      program.projectManager.open(project)
+    end
+  end]]
+  
+  program.sceneManager.setScene(MainMenuScene(program))
+  program.projectManager.open(Project("", "Test"))
+end)

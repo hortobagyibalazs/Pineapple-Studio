@@ -1,0 +1,43 @@
+function Scene(_view, programInst, _tag)
+  local self = {}
+  
+  if programInst == nil or _tag == nil then
+    return nil
+  end
+    
+  local viewName = _view
+  local program = programInst
+  local tag = _tag
+  local components = {}
+  
+  self.view = nil
+  self.active = false
+  self.onStart = nil
+  self.onStop = nil
+  
+  function self.getTag()
+    return tag
+  end
+  
+  function self.getViewName()
+    return viewName
+  end
+  
+  function self.loadComponents(_components)
+    components = _components
+  end
+  
+  function self.getComponent(componentName)
+    return components[componentName]
+  end
+  
+  function self.getComponents()
+    return components
+  end
+  
+  function self.getProgramPath()
+    return program.ProgramPath
+  end
+  
+  return self
+end

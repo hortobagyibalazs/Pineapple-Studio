@@ -15,12 +15,12 @@
 local apis = {
 ["Drawing"] = [[
 local round = function(num, idp)
-	local mult = 10^(idp or 0)
+	local mult = 10^(idp or 0)  
 	return math.floor(num * mult + 0.5) / mult
 end
 
 local _w, _h = term.getSize()
-local copyBuffer = nil
+local copyBuffer = nil  
 
 Screen = {
 	Width = _w,

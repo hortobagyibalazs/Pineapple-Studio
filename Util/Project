@@ -1,0 +1,57 @@
+function Project(_path, _name)
+  local self = {}
+  
+  local name = _name
+  local path = _path
+  local projectTree = {}
+  
+  self.getName = function()
+    return name
+  end
+  
+  self.getPath = function()
+    return path
+  end
+  
+  self.getProjectDir = function()
+    return path.."/"..name
+  end
+  
+  self.getProjectTree = function()
+    return projectTree
+  end
+  
+  self.exists = function()
+    return fs.exists(self.getProjectDir())
+  end
+  
+  self.refreshProjectTree = function()
+    local function scanDir(path)
+      local fileTree = {}
+      if fs.isDir(path) then
+        for k, v in pairs(fs.list(path)) do
+          if fs.isDir(path.."/"..v) then
+            local dir = {Name = v, Type = "Folder", Path = path, Children = {}}
+            dir.Children = scanDir(path.."/"..v)
+            table.insert(fileTree, dir)
+          else
+            table.insert(fileTree, {Name = v, Type = "File", Path = path})
+          end
+        end
+      else
+        return {Name = fs.getName(path), Type = "File"}
+      end
+      
+      return fileTree
+    end
+  
+    if self.onProjectTreeRefresh then
+      self.onProjectTreeRefresh()
+    end
+    Logger.log("Refreshed project tree for "..self.getProjectDir())
+  
+    return scanDir(self.getProjectDir())
+  end
+  
+  return self
+end

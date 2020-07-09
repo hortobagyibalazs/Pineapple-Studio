@@ -1,0 +1,9 @@
+function MainMenuScene(program)
+  local self = Scene("main_menu", program, "MainMenuScene")
+  
+  function self.onStart()
+
+  end
+  
+  return self
+end

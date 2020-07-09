@@ -1,0 +1,80 @@
+local PROJECT_FILE_EXT = "psp" -- Pineapple Studio Project
+
+function ProjectManager(programInst)
+  local self = {}
+  
+  local program = programInst
+  local openProject = nil
+  local listeners = {}
+  
+  function self.open(project)
+    Logger.log("Opening "..project.getProjectDir())
+    if not project.exists() then
+      Logger.log("Creating project directory and updating config file")
+      fs.makeDir(project.getProjectDir())
+    end
+    
+    -- Find project file
+    local rootFiles = fs.list(project.getProjectDir())
+    local projectFileExists = false
+    for k, v in pairs(rootFiles) do
+      if #v > 4 and v:sub(#v-3) == "."..PROJECT_FILE_EXT then
+        Logger.log("Project file found")
+        projectFileExists = true
+      end
+    end
+    
+    if not projectFileExists then
+      local projectFilePath = project.getProjectDir().."/"..RandomKey()..".psp"
+      local file = fs.open(projectFilePath, "w")
+      file.write(project.getName())
+      file.flush()
+      file.close()
+      Logger.log("Project file created")
+    end
+    
+    if openProject ~= project then
+      self.close()
+      
+      openProject = project
+      openProject.refreshProjectTree()
+      
+      for k, v in pairs(listeners) do
+        v(openProject)
+      end
+      Logger.log("Opened projectt")
+    else
+      Logger.log("Reopen unnecessary")
+    end
+  end
+  
+  function self.close()
+    self.openProject = nil
+  end
+  
+  function self.delete()
+    --TODO : Implement
+  end
+  
+  function self.exists()
+    return fs.exists(self.getProjectDir())
+  end  
+  
+  function self.getProject()
+    return openProject
+  end
+  
+  function self.addProjectChangeListener(listener)
+    table.insert(listeners, listener)
+  end
+  
+  function self.removeProjectChangeListener(listener)
+    table.remove(listeners, listener)
+  end
+  
+  function self.removeProjectChangeListeners()
+    listeners = {}
+  end
+  
+  return self
+end

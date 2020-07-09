@@ -1,13 +1,11 @@
---ENABLED = false
-
 Logger = {}
 
-Logger.ENABLED = false
+Logger.ENABLED = true
 Logger.FILE_PATH = ""
 Logger.FILE_NAME = "log.txt"
 
 function Logger.clear()
-  fs.delete("Pineapple-Studio/log.txt")
+  fs.delete(Logger.FILE_PATH.."/"..Logger.FILE_NAME)
 end
 
 function Logger.log(txt)

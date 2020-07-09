@@ -1,0 +1,20 @@
+local DEFAULT_CHARACTERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+local DEFAULT_LENGTH = 16
+
+function RandomKey(characters, length)
+  if characters == nil then
+    characters = DEFAULT_CHARACTERS
+  end
+  
+  if length == nil then
+    length = DEFAULT_LENGTH
+  end
+  
+  local key = ""
+  for i = 1, length do
+    local index = math.random(1, #characters)
+    key = key..characters:sub(index, index)
+  end
+  
+  return key
+end
