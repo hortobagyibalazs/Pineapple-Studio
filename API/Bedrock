@@ -868,7 +868,8 @@ BackgroundColour = colours.lightGrey
 ActiveBackgroundColour = colours.blue
 ActiveTextColour = colours.white
 TextColour = colours.black
-DisabledTextColour = colours.lightGrey
+DisabledTextColour = colours.white
+DisabledBackgroundColour = colours.red
 Text = ""
 Toggle = nil
 Momentary = true
@@ -895,6 +896,7 @@ OnDraw = function(self, x, y)
 	end
 	if not self.Enabled then
 		txt = self.DisabledTextColour
+    bg = self.DisabledBackgroundColour
 	end
 	Drawing.DrawBlankArea(x, y, self.Width, self.Height, bg)
 

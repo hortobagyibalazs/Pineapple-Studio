@@ -1,4 +1,4 @@
-local PROJECT_FILE_EXT = "psp" -- Pineapple Studio Project
+PROJECT_FILE_EXT = "psp" -- Pineapple Studio Project
 
 function ProjectManager(programInst)
   local self = {}
@@ -11,38 +11,49 @@ function ProjectManager(programInst)
     Logger.log("Opening "..project.getProjectDir())
     if not project.exists() then
       Logger.log("Creating project directory and updating config file")
-      fs.makeDir(project.getProjectDir())
-    end
-    
-    -- Find project file
-    local rootFiles = fs.list(project.getProjectDir())
-    local projectFileExists = false
-    for k, v in pairs(rootFiles) do
-      if #v > 4 and v:sub(#v-3) == "."..PROJECT_FILE_EXT then
-        Logger.log("Project file found")
-        projectFileExists = true
+      if not project.singleFile() then
+        fs.makeDir(project.getProjectDir())
+      else
+        local f = fs.open(project.getProjectDir(), "w")
+        f.write()
+        f.flush()
+        f.close()
       end
     end
     
-    if not projectFileExists then
-      local projectFilePath = project.getProjectDir().."/"..RandomKey()..".psp"
-      local file = fs.open(projectFilePath, "w")
-      file.write(project.getName())
-      file.flush()
-      file.close()
-      Logger.log("Project file created")
+    -- Find project file
+    if not project.singleFile() then
+      local rootFiles = fs.list(project.getProjectDir())
+      local projectFileExists = false
+      for k, v in pairs(rootFiles) do
+        if #v > 4 and v:sub(#v-#PROJECT_FILE_EXT) == "."..PROJECT_FILE_EXT then
+          Logger.log("Project file found")
+          projectFileExists = true
+        end
+      end
+    
+      if not projectFileExists then
+        local projectFilePath = project.getProjectDir().."/"..RandomKey()..".psp"
+        local file = fs.open(projectFilePath, "w")
+        file.write(project.getName())
+        file.flush()
+        file.close()
+        Logger.log("Project file created")
+      end
     end
     
     if openProject ~= project then
       self.close()
       
       openProject = project
-      openProject.refreshProjectTree()
+      if not singleFile then
+        openProject.refreshProjectTree()
+      end
       
       for k, v in pairs(listeners) do
         v(openProject)
       end
-      Logger.log("Opened projectt")
+      Logger.log("Opened project")
     else
       Logger.log("Reopen unnecessary")
     end
@@ -50,6 +61,9 @@ function ProjectManager(programInst)
   
   function self.close()
     self.openProject = nil
+    for k, v in pairs(listeners) do
+      v(self.openProject)
+    end
   end
   
   function self.delete()

@@ -1,0 +1,99 @@
+-- Adds project/file creation functionality
+function BasicProjectWizardExtension()
+  local self = Extension("Project Wizard")
+  
+  function self.onSceneLoad(scene)
+    scene.getComponent("ProjectWizard").add("File", "General", {
+      Type = "ScrollView",
+      X = 1,
+      Y = 1,
+      Width = "100%",
+      Height = "100%",
+      Children = {
+        {
+          Name = "FileNameTextBox",
+          Type = "TextBox",
+          X = 3,
+          Y = 1,
+          Width = "100%,-4",
+          Placeholder = "File name",
+        },
+        {
+          Name = "FilePathTextBox",
+          Type = "TextBox",
+          X = 3,
+          Y = 3,
+          Width = "100%,-4",
+          Placeholder = "Path",
+        }
+      }
+    },
+    function()
+      Logger.log("Done!")
+      
+      local fileName = scene.getComponent("ProjectWizard").getObject("FileNameTextBox").Text
+      local filePath = scene.getComponent("ProjectWizard").getObject("FilePathTextBox").Text
+      
+      local project = Project(filePath, fileName, true)
+      
+      if not fs.exists(filePath.."/"..fileName) then
+        scene.getComponent("ProjectManager").obtain().open(project)
+      else
+        Logger.log(filePath.."/"..fileName.." already exists!")
+      end
+    end)
+    
+    scene.getComponent("ProjectWizard").add("Project", "General", {
+      Type = "View",
+      X = 1,
+      Y = 1,
+      Width = "100%",
+      Height = "100%",
+      Children = {
+        {
+          Name = "ProjectNameTextBox",
+          Type = "TextBox",
+          X = 3,
+          Y = 1,
+          Width = "100%,-4",
+          Placeholder = "Project name",
+        },
+        {
+          Name = "ProjectPathTextBox",
+          Type = "TextBox",
+          X = 3,
+          Y = 3,
+          Width = "100%,-4",
+          Placeholder = "Path",
+        }
+      }
+    },
+    function()
+      Logger.log("Done!")
+      
+      local fileName = scene.getComponent("ProjectWizard").getObject("ProjectNameTextBox").Text
+      local filePath = scene.getComponent("ProjectWizard").getObject("ProjectPathTextBox").Text
+      
+      local project = Project(filePath, fileName)
+      
+      if not fs.exists(filePath.."/"..fileName) then
+        scene.getComponent("ProjectManager").obtain().open(project)
+      else
+        Logger.log(filePath.."/"..fileName.." already exists!")
+      end
+    end)
+    
+    scene.getComponent("ProjectWizard").add("Bedrock Program", "General", view)
+    scene.getComponent("ProjectWizard").add("Pineapple Extension", "General", view)
+    scene.getComponent("ProjectWizard").add("Pineapple Theme", "General", view)
+    scene.getComponent("ProjectWizard").add("Game Engine", "General", view)
+  end
+  
+  function self.handleSceneLoad(scene)
+    return scene.getTag() == "ProjectWizardScene"
+  end
+  
+  return self
+end
+
+return BasicProjectWizardExtension()

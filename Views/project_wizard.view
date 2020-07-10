@@ -2,11 +2,12 @@
   Children = {
     {
       Type = "Label",
-      Text = "New Project",
+      Text = "Create New",
       X = 2,
       Y = 2
     },
     {
+      Name = "DoneButton",
       Type = "Button",
       Text = "Done",
       X = "100%,-6",
@@ -25,18 +26,16 @@
       X = 2,
       Y = 4,
       Height = "100%,-6",
-      Width = 15,
-      BackgroundColour = "red",
+      Width = 20,
       CanSelect = true
     },
     {
       Name = "WizardContentView",
       Type = "ScrollView",
-      X = 18,
+      X = 23,
       Y = 4,
-      Width = "100%,-18",
-      Height = "100%,-6",
-      BackgroundColour = "red"
+      Width = "100%,-23",
+      Height = "100%,-6"
     }
   },
   BackgroundColour = "white"

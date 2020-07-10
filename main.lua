@@ -123,6 +123,6 @@ program:Run(function()
     end
   end]]
   
-  program.sceneManager.setScene(ProjectWizardScene(program))
+  program.sceneManager.setScene(MainMenuScene(program))
   --program.projectManager.open(Project("", "Test"))
 end)

@@ -1,8 +1,9 @@
-function Project(_path, _name)
+function Project(_path, _name, _singleFile)
   local self = {}
   
   local name = _name
   local path = _path
+  local singleFileProject = _singleFile
   local projectTree = {}
   
   self.getName = function()
@@ -25,7 +26,7 @@ function Project(_path, _name)
     return fs.exists(self.getProjectDir())
   end
   
-  self.refreshProjectTree = function()
+  self.refreshProjectTree = function()  
     local function scanDir(path)
       local fileTree = {}
       if fs.isDir(path) then
@@ -51,6 +52,10 @@ function Project(_path, _name)
     Logger.log("Refreshed project tree for "..self.getProjectDir())
   
     return scanDir(self.getProjectDir())
+  end
+  
+  self.singleFile = function()
+    return singleFileProject
   end
   
   return self

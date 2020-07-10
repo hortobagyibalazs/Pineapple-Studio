@@ -1,3 +1,37 @@
+local function scanDir(path)
+  local fileTree = {}
+  if fs.isDir(path) then
+    for k, v in pairs(fs.list(path)) do
+      if fs.isDir(path.."/"..v) then
+        local dir = {Name = v, Type = "Folder", Path = path, Children = {}}
+        dir.Children = scanDir(path.."/"..v)
+        table.insert(fileTree, dir)
+      else
+        table.insert(fileTree, {Name = v, Type = "File", Path = path})
+      end
+    end
+    
+    return fileTree
+  else
+    return {Name = fs.getName(path), Type = "File", Path = path}
+  end
+end
+
+function projectTree(tree) 
+  local pspFiles = {}
+  if tree.Type == "Folder" then
+    for k, v in pairs(tree.Children) do
+      table.insert(pspFiles, unpack(projectTree(v)))
+    end
+  else
+    if #tree.Name > 4 and tree.Name:sub(#tree.Name-#PROJECT_FILE_EXT) == "."..PROJECT_FILE_EXT then
+      table.insert(pspFiles, tree)
+    end
+  end
+  
+  return pspFiles
+end
+
 function MainMenuScene(program)
   local self = Scene("main_menu", program, "MainMenuScene")
   
@@ -10,7 +44,23 @@ function MainMenuScene(program)
         program.sceneManager.setScene(newScene)
       end
     end
+    
+    local scanResult = scanDir("")
+    local pspFiles = {}
+    for k, v in pairs(scanResult) do
+      for i, j in pairs(projectTree(v)) do
+        table.insert(pspFiles, j.Path)
+      end
+    end
+    self.view:GetObject("ProjectsListView").Items = pspFiles
+    self.view:GetObject("ProjectsListView").OnSelect = function(_, item)
+      local rootDir = fs.getDir(item)
+      local projectName = fs.getName(item)
+      local project = Project(rootDir, projectName, false)
+      
+      program.projectManager.open(project)
+    end
   end
   
   return self
-end
+end 

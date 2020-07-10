@@ -10,6 +10,13 @@ function ProjectWizardScene(program)
       end
     end
     
+    self.view:GetObject("DoneButton").OnClick = function()
+      local selected = self.view:GetObject("WizardsListView").Selected
+      if selected then
+        wizards[selected.Text].onDone()
+      end
+    end
+    
     self.view:GetObject("WizardsListView").OnSelect = function(_, item)
       self.view:GetObject("WizardContentView"):RemoveAllObjects()
       self.view:GetObject("WizardContentView"):AddObject(wizards[item].View)
@@ -17,16 +24,24 @@ function ProjectWizardScene(program)
   end
   
   self.loadComponents({
+    ["ProjectManager"] = {
+      ["obtain"] = function()
+        return program.projectManager
+      end
+    },
     ["ProjectWizard"] = {
-      ["add"] = function(label, category, view)
-        wizards[label] = {["Category"] = category, ["View"] = view}
+      ["add"] = function(label, category, view, onDone)
+        wizards[label] = {["Category"] = category, ["View"] = view, ["onDone"] = onDone}
         table.insert(self.view:GetObject("WizardsListView").Items, {
           ["Text"] = label,
           ["Toggle"] = false,
           ["Group"] = 1
         })
         self.view:GetObject("WizardsListView"):UpdateItems()
-      end
+      end,
+      ["getObject"] = function(name)
+        return program:GetObject(name)
+      end,
     }
   })
   
