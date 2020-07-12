@@ -10,12 +10,112 @@
       BackgroundColour = "lightGray"
       },
     {
-      Name = "ProjectView",
+      Name = "FileView",
       Type = "View",
       X = 1,
       Y = 2,
       Width = "100%",
-      Height = "100%,-1"
+      Height = "100%,-1",
+      BackgroundColour = "yellow",
+      Children = {
+        {
+          Type = "Button",
+          Text = "Hello Button!",
+          X = 2,
+          Y = "25%",
+          Width = "20%",
+          RelativeWidth = "100%, -2",
+          RelativeHeight = "30%"
+        }
+      }
+    },
+    {
+      Name = "LeftToolBar",
+      Type = "View",
+      X = 1,
+      Y = 2,
+      Width = 1,
+      Height = "100%,-1",
+      BackgroundColour = "gray",
+      Children = {
+        {
+          Name = "LeftToolBarResizeDraggable",
+          Type = "Label",
+          Text = "=",
+          X = "100%",
+          Y = "50%",
+          RelativeX = "100%",
+          Height = 3
+        },
+        {
+          Type = "View",
+          Name = "LeftToolBarContentView",
+          X = 1,
+          Y = 2,
+          Width = "100%,-1",
+          Height = "100%,-1",
+          RelativeWidth = "100%,-1",
+          BackgroundColour = "lightGray"
+        }
+      }
+    },
+    {
+      Name = "RightToolBar",
+      Type = "View",
+      X = "100%",
+      Y = 2,
+      Width = 1,
+      Height = "100%,-1",
+      BackgroundColour = "gray",
+      Children = {
+        {
+          Name = "RightToolBarResizeDraggable",
+          Type = "Label",
+          Text = "=",
+          X = 1,
+          Y = "50%",
+          Height = 3
+        },
+        {
+          Type = "View",
+          Name = "RightToolBarContentView",
+          X = 2,
+          Y = 2,
+          Width = "100%,-1",
+          Height = "100%,-1",
+          RelativeWidth = "100%,-1",
+          BackgroundColour = "lightGray"
+        }
+      }
+    },
+        {
+      Name = "BottomToolBar",
+      Type = "View",
+      X = 1,
+      Y = "100%",
+      Width = "100%",
+      Height = 1,
+      BackgroundColour = "gray",
+      Children = {
+        {
+          Name = "BottomToolBarResizeDraggable",
+          Type = "Label",
+          Text = "=",
+          X = "50%",
+          Y = 1,
+          Height = Width
+        },
+        {
+          Type = "View",
+          Name = "BottomToolBarContentView",
+          X = 1,
+          Y = 2,
+          Width = "100%",
+          Height = "100%,-1",
+          RelativeHeight = "100%,-1",
+          BackgroundColour = "lightGray"
+        }
+      }
     }
   },
   BackgroundColour = "white"

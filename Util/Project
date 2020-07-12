@@ -6,6 +6,8 @@ function Project(_path, _name, _singleFile)
   local singleFileProject = _singleFile
   local projectTree = {}
   
+  local listeners = {}
+  
   self.getName = function()
     return name
   end
@@ -46,12 +48,30 @@ function Project(_path, _name, _singleFile)
       return fileTree
     end
   
+    projectTree = scanDir(self.getProjectDir())
+    
     if self.onProjectTreeRefresh then
       self.onProjectTreeRefresh()
     end
     Logger.log("Refreshed project tree for "..self.getProjectDir())
+    
+    for k, v in pairs(listeners) do
+      v()
+    end
+    
+    return projectTree
+  end
   
-    return scanDir(self.getProjectDir())
+  self.addOnFileTreeChangeListener = function(listener) 
+    table.insert(listeners, listener)
+  end
+  
+  self.removeOnFileTreeChangeListener = function(listener)
+    table.remove(listeners, listener)
+  end
+  
+  self.removeOnFileTreeChangeListeners = function()
+    listeners = {}
   end
   
   self.singleFile = function()

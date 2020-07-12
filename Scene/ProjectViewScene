@@ -2,26 +2,163 @@ function ProjectViewScene(program)
   local self = Scene("project", program, "ProjectViewScene")
   
   local fileViewers = {}
+  local toolbars = {}
   
   function self.onStart()
+    local function resizeChildren(parent) 
+      for k, v in pairs(parent.Children) do
+        if v.RelativeX ~= nil then
+          v.X = program:ParseStringSize(parent, "X", v.RelativeX)
+        end
+        if v.RelativeWidth ~= nil then
+          v.Width = program:ParseStringSize(parent, "Width", v.RelativeWidth)
+        end
+        if v.RelativeY ~= nil then
+          v.Y = program:ParseStringSize(parent, "Y", v.RelativeY)
+        end
+        if v.RelativeHeight ~= nil then
+          v.Height = program:ParseStringSize(parent, "Height", v.RelativeHeight)
+        end
+        
+        if type(v.Children) == "table" and #v.Children > 0 then
+          resizeChildren(v)
+        end
+      end
+    end
+  
     self.getComponent("MenuBar").addMenu("File")
     self.getComponent("MenuBar").addMenu("File")
     self.getComponent("MenuBar").addMenu("View")
     self.getComponent("MenuBar").addMenu("Edit")
     self.getComponent("MenuBar").addMenu("Run")  
     
-    self.getComponent("FileViewer").handleFileType("lua", function(path) 
-      local view = {
-        ["Type"] = "View",
-        ["X"] = 2,
-        ["Y"] = 2,
-        ["Width"] = 20,
-        ["Height"] = 10,
-        ["BackgroundColour"] = "cyan"
-      }
+    local defaultFileViewAttributes = {
+      self.view:GetObject("FileView").X,
+      self.view:GetObject("FileView").Y,
+      self.view:GetObject("FileView").Width,
+      self.view:GetObject("FileView").Height
+    }
+    
+    self.view:GetObject("FileView").OnUpdate = function(_self)
+      local width = _self.Width
       
-      return view
-    end)
+      if self.view:GetObject("LeftToolBar").Visible then
+        _self.X = defaultFileViewAttributes[1] + self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width - 1
+        width = program.View.Width - _self.X + 1
+      end
+      
+      if self.view:GetObject("RightToolBar").Visible then
+        width = width - self.view:GetObject("RightToolBar").Width
+      end
+      
+      _self.Width = width
+      
+      if self.view:GetObject("BottomToolBar").Visible then
+        _self.Height = self.view:GetObject("BottomToolBar").Y - _self.Y
+      end
+      
+      resizeChildren(_self)
+    end
+    
+    local draggingLeftToolBar = false
+    local draggingRightToolBar = false
+    local draggingBottomToolBar = false
+    
+    self.view:GetObject("LeftToolBarResizeDraggable").OnClick = function(_self)
+      draggingLeftToolBar = true
+      draggingRightToolBar = false
+      draggingBottomToolBar = false
+      
+      _self.Text = ":"
+      self.view:GetObject("RightToolBarResizeDraggable").Text = "="
+      self.view:GetObject("BottomToolBarResizeDraggable").Text = "="
+      Logger.log("DRAGGING STARTED")
+      
+      self.view:GetObject("LeftToolBar").Z = math.max(self.view:GetObject("RightToolBar").Z,
+      self.view:GetObject("BottomToolBar").Z) + 1
+    end
+    
+    self.view:GetObject("RightToolBarResizeDraggable").OnClick = function(_self)
+      draggingRightToolBar = true
+      draggingLeftToolBar = false
+      draggingBottomToolBar = false
+      
+      _self.Text = ":"
+      self.view:GetObject("LeftToolBarResizeDraggable").Text = "="
+      self.view:GetObject("BottomToolBarResizeDraggable").Text = "="
+      Logger.log("DRAGGING STARTED")
+      
+      self.view:GetObject("RightToolBar").Z = math.max(self.view:GetObject("LeftToolBar").Z,
+      self.view:GetObject("BottomToolBar").Z) + 1
+    end
+    
+    self.view:GetObject("BottomToolBarResizeDraggable").OnClick = function(_self)
+      draggingBottomToolBar = true
+      draggingLeftToolBar = false
+      draggingRightToolBar = false
+      
+      _self.Text = ":"
+      self.view:GetObject("LeftToolBarResizeDraggable").Text = "="
+      self.view:GetObject("RightToolBarResizeDraggable").Text = "="
+      Logger.log("DRAGGING STARTED")
+      
+      self.view:GetObject("BottomToolBar").Z = math.max(self.view:GetObject("RightToolBar").Z,
+      self.view:GetObject("LeftToolBar").Z) + 1
+    end
+    
+    program.View.OnDrag = function(_, event, button, x, y)
+      if draggingLeftToolBar then
+        Logger.log("DRAGGING")
+        if (x >= self.view:GetObject("RightToolBar").X) then 
+          x = self.view:GetObject("RightToolBar").X - 1
+        end
+          
+        self.view:GetObject("LeftToolBar").Width = x
+        resizeChildren(self.view:GetObject("LeftToolBar"))
+        
+        self.view:GetObject("FileView"):OnUpdate()
+      end
+      
+      if draggingRightToolBar then
+        Logger.log("DRAGGING")
+        if (x <= self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width - 1) then
+          x = self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width
+        end
+          
+        self.view:GetObject("RightToolBar").X = x
+        self.view:GetObject("RightToolBar").Width = self.view.Width - self.view:GetObject("RightToolBar").X + 1
+        resizeChildren(self.view:GetObject("RightToolBar"))
+        
+        self.view:GetObject("FileView"):OnUpdate()
+      end
+      
+      if draggingBottomToolBar then
+        Logger.log("DRAGGING")
+        if (y <= self.view:GetObject("MenuBar").X + self.view:GetObject("MenuBar").Height - 1) then
+          y = self.view:GetObject("MenuBar").X + self.view:GetObject("MenuBar").Height
+        end
+        
+        self.view:GetObject("BottomToolBar").Y = y
+        self.view:GetObject("BottomToolBar").Height = self.view.Height - self.view:GetObject("BottomToolBar").Y + 1
+        resizeChildren(self.view:GetObject("BottomToolBar"))
+        
+        self.view:GetObject("FileView"):OnUpdate()
+      end
+    end
+    
+    program.View.OnMouseRelease = function()
+      draggingLeftToolBar = false
+      draggingRightToolBar = false
+      draggingBottomToolBar = false
+      
+      self.view:GetObject("LeftToolBarResizeDraggable").Text = "="
+      self.view:GetObject("RightToolBarResizeDraggable").Text = "="
+      self.view:GetObject("BottomToolBarResizeDraggable").Text = "="
+      
+      Logger.log("DRAGGING STOPPED")
+    end
+    
+    resizeChildren(self.view)
   end
   
   self.loadComponents({
@@ -61,7 +198,13 @@ function ProjectViewScene(program)
         fileViewers[type] = getViewOnFileOpen
       end,
       ["openFile"] = function(path)
-      
+        
+      end
+    },
+    -- left, right, bottom tool bar
+    ["ToolBar"] = {
+      ["add"] = function(label, view)
+        toolbars[label] = view
       end
     }
   })

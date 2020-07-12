@@ -842,6 +842,8 @@ Click = function(self, event, side, x, y)
 			return true
 		elseif event == 'mouse_scroll' and self.OnScroll and self:OnScroll(event, side, x, y) ~= false then
 			return true
+    elseif event == 'mouse_up' and self.OnMouseRelease and self:OnMouseRelease(event, side, x, y) ~= false then
+      return true
 		else
 			return false
 		end
@@ -2132,6 +2134,8 @@ Click = function(self, event, side, x, y, z)
 			return true
 		elseif event == 'mouse_scroll' and self.OnScroll and self:OnScroll(event, side, x, y) ~= false then
 			return true
+    elseif event == "mouse_up" and self.OnMouseRelease and self:OnMouseRelease(event, side, x, y) ~= false then
+      return true
 		else
 			return false
 		end
@@ -3496,7 +3500,7 @@ local eventFuncs = {
 	OnKeyChar = {'key', 'char'},
 	OnDrag = {'mouse_drag'},
 	OnScroll = {'mouse_scroll'},
-	HandleClick = {'mouse_click', 'mouse_drag', 'mouse_scroll', 'monitor_touch'},
+	HandleClick = {'mouse_click', 'mouse_drag', 'mouse_scroll', 'monitor_touch', 'mouse_up'},
 	HandleKeyChar = {'key', 'char'},
 	HandleTimer = {'timer'},
 	HandleDraw = {'bedrock_draw'}
