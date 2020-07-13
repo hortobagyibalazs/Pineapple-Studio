@@ -1,0 +1,27 @@
+function BasicFileViewerExtension()
+  local self = Extension("Basic file viewer")
+  
+  function self.onSceneLoad(scene)
+    scene.getComponent("FileViewer").addViewer("Test", function(path) 
+      return true
+    end, 
+    function() 
+      return {
+        Type = "View",
+        X = 2,
+        Y = 2,
+        RelativeWidth = "100%,-2",
+        RelativeHeight = "100%,-2",
+        BackgroundColour = "yellow"
+      } 
+    end)
+  end
+  
+  function self.handleSceneLoad(scene)
+    return scene.getTag() == "ProjectViewScene"
+  end
+  
+  return self
+end
+
+return BasicFileViewerExtension()

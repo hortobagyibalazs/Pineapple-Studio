@@ -16,18 +16,7 @@
       Y = 2,
       Width = "100%",
       Height = "100%,-1",
-      BackgroundColour = "yellow",
-      Children = {
-        {
-          Type = "Button",
-          Text = "Hello Button!",
-          X = 2,
-          Y = "25%",
-          Width = "20%",
-          RelativeWidth = "100%, -2",
-          RelativeHeight = "30%"
-        }
-      }
+      BackgroundColour = "white"
     },
     {
       Name = "LeftToolBar",

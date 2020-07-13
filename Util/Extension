@@ -1,8 +1,13 @@
 function Extension(_name)
   local self = {}
   
+  local id = RandomKey()
   local name = _name
   self.enabled = true
+  
+  function self.getId()
+    return id
+  end
   
   function self.getName()
     return name

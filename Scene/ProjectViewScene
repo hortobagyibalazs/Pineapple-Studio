@@ -3,10 +3,13 @@ function ProjectViewScene(program)
   
   local fileViewers = {}
   local toolbars = {}
+  local menuBarItems = {}
   
   function self.onStart()
     local function resizeChildren(parent) 
       for k, v in pairs(parent.Children) do
+        local name = v.Name or "-"
+        
         if v.RelativeX ~= nil then
           v.X = program:ParseStringSize(parent, "X", v.RelativeX)
         end
@@ -19,18 +22,12 @@ function ProjectViewScene(program)
         if v.RelativeHeight ~= nil then
           v.Height = program:ParseStringSize(parent, "Height", v.RelativeHeight)
         end
-        
+                
         if type(v.Children) == "table" and #v.Children > 0 then
           resizeChildren(v)
         end
       end
     end
-  
-    self.getComponent("MenuBar").addMenu("File")
-    self.getComponent("MenuBar").addMenu("File")
-    self.getComponent("MenuBar").addMenu("View")
-    self.getComponent("MenuBar").addMenu("Edit")
-    self.getComponent("MenuBar").addMenu("Run")  
     
     local defaultFileViewAttributes = {
       self.view:GetObject("FileView").X,
@@ -72,7 +69,6 @@ function ProjectViewScene(program)
       _self.Text = ":"
       self.view:GetObject("RightToolBarResizeDraggable").Text = "="
       self.view:GetObject("BottomToolBarResizeDraggable").Text = "="
-      Logger.log("DRAGGING STARTED")
       
       self.view:GetObject("LeftToolBar").Z = math.max(self.view:GetObject("RightToolBar").Z,
       self.view:GetObject("BottomToolBar").Z) + 1
@@ -86,7 +82,6 @@ function ProjectViewScene(program)
       _self.Text = ":"
       self.view:GetObject("LeftToolBarResizeDraggable").Text = "="
       self.view:GetObject("BottomToolBarResizeDraggable").Text = "="
-      Logger.log("DRAGGING STARTED")
       
       self.view:GetObject("RightToolBar").Z = math.max(self.view:GetObject("LeftToolBar").Z,
       self.view:GetObject("BottomToolBar").Z) + 1
@@ -100,7 +95,6 @@ function ProjectViewScene(program)
       _self.Text = ":"
       self.view:GetObject("LeftToolBarResizeDraggable").Text = "="
       self.view:GetObject("RightToolBarResizeDraggable").Text = "="
-      Logger.log("DRAGGING STARTED")
       
       self.view:GetObject("BottomToolBar").Z = math.max(self.view:GetObject("RightToolBar").Z,
       self.view:GetObject("LeftToolBar").Z) + 1
@@ -108,7 +102,6 @@ function ProjectViewScene(program)
     
     program.View.OnDrag = function(_, event, button, x, y)
       if draggingLeftToolBar then
-        Logger.log("DRAGGING")
         if (x >= self.view:GetObject("RightToolBar").X) then 
           x = self.view:GetObject("RightToolBar").X - 1
         end
@@ -120,7 +113,6 @@ function ProjectViewScene(program)
       end
       
       if draggingRightToolBar then
-        Logger.log("DRAGGING")
         if (x <= self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width - 1) then
           x = self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width
         end
@@ -133,7 +125,6 @@ function ProjectViewScene(program)
       end
       
       if draggingBottomToolBar then
-        Logger.log("DRAGGING")
         if (y <= self.view:GetObject("MenuBar").X + self.view:GetObject("MenuBar").Height - 1) then
           y = self.view:GetObject("MenuBar").X + self.view:GetObject("MenuBar").Height
         end
@@ -154,16 +145,19 @@ function ProjectViewScene(program)
       self.view:GetObject("LeftToolBarResizeDraggable").Text = "="
       self.view:GetObject("RightToolBarResizeDraggable").Text = "="
       self.view:GetObject("BottomToolBarResizeDraggable").Text = "="
-      
-      Logger.log("DRAGGING STOPPED")
     end
     
     resizeChildren(self.view)
   end
   
   self.loadComponents({
+    ["ProjectManager"] = {
+      ["obtain"] = function()
+        return program.projectManager
+      end
+    },
     ["MenuBar"] = {
-      ["addMenu"] = function(label)      
+      ["addMenu"] = function(extension, label)      
         local xCoords = {}
         for k, v in pairs(self.view:GetObject("MenuBar").Children) do
           table.insert(xCoords, {v.X, v.Width})
@@ -185,26 +179,71 @@ function ProjectViewScene(program)
           ["X"] = lastMenu[1] + lastMenu[2],
           ["Y"] = 1,
           ["Height"] = 1,
-          ["Width"] = #label + 2
+          ["Width"] = #label + 2,
+          ["AddedBy"] = extension.getId(),
+          ["OnClick"] = function(_self, event, side, x, y)
+            local children = {}
+            if type(menuBarItems[label]) == "table" then
+              for k, v in pairs(menuBarItems[label]) do
+                table.insert(children, {
+                  Type = "Button",
+                  Text = k,
+                  OnClick = menuBarItems[label][k]
+                })
+              end
+              _self:ToggleMenu({
+                ["Type"] = "Menu",
+                ["Children"] = children
+              }, x, y)
+            end
+          end
         })
       end,
-      ["addMenuItem"] = function(menu, item, onClick)
-      
+      ["removeMenu"] = function(extension, label)
+        for k, v in pairs(self.view:GetObject("MenuBar")) do
+          -- id checking is needed to ensure that a menu only gets removed by the extension that created it
+          if v.Name == label and v.AddedBy == extension.getId() then
+            self.view:GetObject():RemoveObject(v.Name)
+          end
+        end
+      end,
+      ["addMenuItem"] = function(extension, menu, item, onClick)
+        if menuBarItems[menu] == nil then
+          menuBarItems[menu] = {}
+        end
+        
+        menuBarItems[menu][item] = onClick
       end
     },
     
     ["FileViewer"] = {
-      ["handleFileType"] = function(type, getViewOnFileOpen)
-        fileViewers[type] = getViewOnFileOpen
+      -- called when a file open event is fired
+      -- canOpenFile : a 'function' typed parameter which receives a file path and returns a boolean
+      -- getViewOnFileOpen: a 'function' typed parameter which returns a Bedrock view
+      ["addViewer"] = function(_name, fileCheckMethod, getViewOnFileOpen)
+        table.insert(fileViewers, {
+          name = _name,
+          canOpenFile = fileCheckMethod,
+          getView = getViewOnFileOpen
+        })
       end,
       ["openFile"] = function(path)
-        
+        for k, v in pairs(fileViewers) do
+          if v.canOpenFile(path) then
+            self.view:GetObject("FileView"):RemoveAllObjects()
+            self.view:GetObject("FileView"):AddObject(v.getView())
+            self.view:GetObject("FileView"):OnUpdate()
+            break
+          end
+        end
       end
     },
     -- left, right, bottom tool bar
     ["ToolBar"] = {
       ["add"] = function(label, view)
         toolbars[label] = view
+        
+        self.view:GetObject("LeftToolBarContentView"):AddObject(view)
       end
     }
   })

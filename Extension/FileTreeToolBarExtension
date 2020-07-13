@@ -1,0 +1,79 @@
+local function scanDir(path, deepScan)
+  local fileTree = {}
+  if fs.isDir(path) then
+    for k, v in pairs(fs.list(path)) do
+      if fs.isDir(path.."/"..v) then
+        local dir = {Name = v, Type = "Folder", Path = path, Children = {}}
+        if deepScan then
+          dir.Children = scanDir(path.."/"..v)
+        end
+        table.insert(fileTree, dir)
+      else
+        table.insert(fileTree, {Name = v, Type = "File", Path = path})
+      end
+    end
+    
+    return fileTree
+  else
+    return {Name = fs.getName(path), Type = "File", Path = path}
+  end
+end
+
+local currentDir = nil
+local function loadListItems(list, files)
+  list.Items = {}
+  for k, v in pairs(files) do
+    table.insert(list.Items, {
+      RelativeWidth = "100%",
+      Text = v.Name
+    })
+    currentDir = v.Path
+  end
+end
+
+function FileTreeToolBarExtension()
+  local self = Extension("File Tree")
+  
+  function self.onSceneLoad(scene)
+    local listView = {
+      Name = "FileTreeView",
+      Type = "ListView",
+      X = 1,
+      Y = 1,
+      RelativeWidth = "100%",
+      RelativeHeight = "100%",
+      BackgroundColour = "white"
+    }
+    
+    listView.OnSelect = function(_self, item)
+      Logger.log(currentDir.."/"..item)
+      if item == "..." then
+        local parentDirItems = scanDir(fs.getDir(currentDir))
+        loadListItems(_self, parentDirItems) 
+      elseif fs.isDir(currentDir.."/"..item) then
+        local children = scanDir(currentDir.."/"..item)
+        loadListItems(_self, children)
+        if currentDir ~= scene.getComponent("ProjectManager").obtain().getProject().getProjectDir() then
+          table.insert(_self.Items, 1, {
+            RelativeWidth = "100%",
+            Text = "..."
+          })
+        end
+      else
+        scene.getComponent("FileViewer").openFile(currentDir.."/"..item)
+      end
+    end
+  
+    loadListItems(listView, scene.getComponent("ProjectManager").obtain().getProject().getProjectTree())
+    scene.getComponent("ToolBar").add("File tree", listView)
+  end
+  
+  function self.handleSceneLoad(scene)
+    return scene.getTag() == "ProjectViewScene"
+  end
+  
+  return self
+end
+
+return FileTreeToolBarExtension()
+

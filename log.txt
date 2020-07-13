@@ -1,265 +1,49 @@
-[17.791] : ---------Program started---------
-[17.791] : Loading Pineapple-Studio/API/Bedrock
-[17.792] : Successfully loaded Pineapple-Studio/API/Bedrock
-[17.792] : Loading Pineapple-Studio/Util/Extension
-[17.792] : Successfully loaded Pineapple-Studio/Util/Extension
-[17.792] : Loading Pineapple-Studio/Util/ExtensionManager
-[17.792] : Successfully loaded Pineapple-Studio/Util/ExtensionManager
-[17.792] : Loading Pineapple-Studio/Util/Project
-[17.792] : Successfully loaded Pineapple-Studio/Util/Project
-[17.792] : Loading Pineapple-Studio/Util/ProjectManager
-[17.792] : Successfully loaded Pineapple-Studio/Util/ProjectManager
-[17.792] : Loading Pineapple-Studio/Util/RandomKeyGenerator
-[17.792] : Successfully loaded Pineapple-Studio/Util/RandomKeyGenerator
-[17.792] : Loading Pineapple-Studio/Util/Scene
-[17.792] : Successfully loaded Pineapple-Studio/Util/Scene
-[17.792] : Loading Pineapple-Studio/Util/SceneManager
-[17.792] : Successfully loaded Pineapple-Studio/Util/SceneManager
-[17.792] : Loading Pineapple-Studio/Util/SceneTransitionAnimation
-[17.792] : Successfully loaded Pineapple-Studio/Util/SceneTransitionAnimation
-[17.792] : Loading Pineapple-Studio/Util/SharedPreferences
-[17.792] : Successfully loaded Pineapple-Studio/Util/SharedPreferences
-[17.792] : Loading Pineapple-Studio/Scene/MainMenuScene
-[17.792] : Successfully loaded Pineapple-Studio/Scene/MainMenuScene
-[17.792] : Loading Pineapple-Studio/Scene/ProjectViewScene
-[17.793] : Successfully loaded Pineapple-Studio/Scene/ProjectViewScene
-[17.793] : Loading Pineapple-Studio/Scene/ProjectWizardScene
-[17.793] : Successfully loaded Pineapple-Studio/Scene/ProjectWizardScene
-[17.793] : Loading Pineapple-Studio/Extension/BasicProjectWizardExtension
-[17.793] : Successfully loaded Pineapple-Studio/Extension/BasicProjectWizardExtension
-[17.793] : Loaded 14/14 APIs
-[17.793] : Registered extension 'Project Wizard'
-[17.793] : Set scene MainMenuScene
-[17.813] : Opening System/Projects/Appstore.program
-[17.813] : Project file found
-[17.813] : Refreshed project tree for System/Projects/Appstore.program
-[17.814] : Set scene ProjectViewScene
-[17.815] : Add menu 'File' to MenuBar
-[17.815] : Add menu 'View' to MenuBar
-[17.815] : Add menu 'Edit' to MenuBar
-[17.815] : Add menu 'Run' to MenuBar
-[17.815] : Opened project
-[17.815] : DRAGGING STOPPED
-[17.854] : DRAGGING STARTED
-[17.856] : DRAGGING
-[17.856] : DRAGGING
-[17.872] : DRAGGING
-[17.872] : DRAGGING
-[17.873] : DRAGGING
-[17.873] : DRAGGING
-[17.873] : DRAGGING
-[17.874] : DRAGGING
-[17.875] : DRAGGING
-[17.876] : DRAGGING
-[17.876] : DRAGGING
-[17.877] : DRAGGING
-[17.877] : DRAGGING
-[17.878] : DRAGGING
-[17.883] : DRAGGING
-[17.884] : DRAGGING
-[17.885] : DRAGGING
-[17.885] : DRAGGING
-[17.886] : DRAGGING STOPPED
-[17.917] : DRAGGING STOPPED
-[17.936] : DRAGGING STARTED
-[17.937] : DRAGGING
-[17.938] : DRAGGING
-[17.939] : DRAGGING
-[17.939] : DRAGGING
-[17.94] : DRAGGING
-[17.94] : DRAGGING
-[17.94] : DRAGGING
-[17.945] : DRAGGING
-[17.946] : DRAGGING
-[17.947] : DRAGGING
-[17.947] : DRAGGING
-[17.948] : DRAGGING
-[17.953] : DRAGGING
-[17.954] : DRAGGING
-[17.955] : DRAGGING
-[17.955] : DRAGGING
-[17.955] : DRAGGING
-[17.956] : DRAGGING
-[17.956] : DRAGGING
-[17.956] : DRAGGING
-[17.967] : DRAGGING
-[17.975] : DRAGGING
-[17.976] : DRAGGING
-[17.977] : DRAGGING
-[17.977] : DRAGGING
-[17.978] : DRAGGING
-[17.981] : DRAGGING
-[17.99] : DRAGGING
-[17.992] : DRAGGING
-[17.994] : DRAGGING
-[18.005] : DRAGGING
-[18.015] : DRAGGING
-[18.017] : DRAGGING
-[18.025] : DRAGGING
-[18.026] : DRAGGING
-[18.035] : DRAGGING
-[18.036] : DRAGGING
-[18.037] : DRAGGING
-[18.038] : DRAGGING
-[18.043] : DRAGGING
-[18.044] : DRAGGING
-[18.045] : DRAGGING
-[18.046] : DRAGGING
-[18.066] : DRAGGING
-[18.089] : DRAGGING
-[18.099] : DRAGGING
-[18.1] : DRAGGING
-[18.109] : DRAGGING
-[18.111] : DRAGGING
-[18.114] : DRAGGING
-[18.115] : DRAGGING
-[18.117] : DRAGGING
-[18.129] : DRAGGING
-[18.129] : DRAGGING
-[18.129] : DRAGGING
-[18.13] : DRAGGING
-[18.13] : DRAGGING
-[18.131] : DRAGGING
-[18.131] : DRAGGING
-[18.132] : DRAGGING
-[18.132] : DRAGGING
-[18.135] : DRAGGING
-[18.135] : DRAGGING
-[18.135] : DRAGGING
-[18.136] : DRAGGING
-[18.137] : DRAGGING
-[18.137] : DRAGGING
-[18.139] : DRAGGING
-[18.139] : DRAGGING
-[18.14] : DRAGGING
-[18.14] : DRAGGING
-[18.14] : DRAGGING
-[18.141] : DRAGGING
-[18.142] : DRAGGING
-[18.142] : DRAGGING
-[18.143] : DRAGGING
-[18.144] : DRAGGING
-[18.145] : DRAGGING
-[18.145] : DRAGGING
-[18.146] : DRAGGING
-[18.146] : DRAGGING
-[18.146] : DRAGGING
-[18.152] : DRAGGING
-[18.152] : DRAGGING
-[18.153] : DRAGGING
-[18.153] : DRAGGING
-[18.154] : DRAGGING
-[18.155] : DRAGGING
-[18.156] : DRAGGING
-[18.157] : DRAGGING
-[18.158] : DRAGGING
-[18.159] : DRAGGING
-[18.165] : DRAGGING
-[18.166] : DRAGGING
-[18.166] : DRAGGING
-[18.166] : DRAGGING
-[18.195] : DRAGGING STOPPED
-[18.214] : DRAGGING STARTED
-[18.214] : DRAGGING
-[18.215] : DRAGGING
-[18.215] : DRAGGING
-[18.216] : DRAGGING
-[18.216] : DRAGGING
-[18.216] : DRAGGING
-[18.217] : DRAGGING
-[18.217] : DRAGGING
-[18.217] : DRAGGING
-[18.225] : DRAGGING
-[18.226] : DRAGGING
-[18.226] : DRAGGING
-[18.226] : DRAGGING
-[18.227] : DRAGGING
-[18.227] : DRAGGING
-[18.234] : DRAGGING
-[18.235] : DRAGGING
-[18.236] : DRAGGING
-[18.236] : DRAGGING
-[18.237] : DRAGGING
-[18.238] : DRAGGING
-[18.257] : DRAGGING STOPPED
-[18.288] : DRAGGING STOPPED
-[18.31] : DRAGGING STOPPED
-[18.321] : DRAGGING STARTED
-[18.322] : DRAGGING
-[18.323] : DRAGGING
-[18.324] : DRAGGING
-[18.324] : DRAGGING
-[18.325] : DRAGGING
-[18.326] : DRAGGING
-[18.328] : DRAGGING
-[18.329] : DRAGGING
-[18.33] : DRAGGING
-[18.33] : DRAGGING
-[18.331] : DRAGGING
-[18.362] : DRAGGING STOPPED
-[18.395] : DRAGGING STOPPED
-[18.505] : DRAGGING STOPPED
-[18.523] : DRAGGING STARTED
-[18.524] : DRAGGING
-[18.526] : DRAGGING
-[18.526] : DRAGGING
-[18.528] : DRAGGING
-[18.536] : DRAGGING
-[18.536] : DRAGGING
-[18.537] : DRAGGING
-[18.538] : DRAGGING
-[18.538] : DRAGGING
-[18.549] : DRAGGING
-[18.55] : DRAGGING
-[18.551] : DRAGGING
-[18.551] : DRAGGING
-[18.552] : DRAGGING
-[18.555] : DRAGGING
-[18.56] : DRAGGING STOPPED
-[18.592] : DRAGGING STARTED
-[18.593] : DRAGGING
-[18.594] : DRAGGING
-[18.595] : DRAGGING
-[18.596] : DRAGGING
-[18.597] : DRAGGING
-[18.605] : DRAGGING
-[18.606] : DRAGGING
-[18.606] : DRAGGING
-[18.607] : DRAGGING
-[18.61] : DRAGGING
-[18.61] : DRAGGING
-[18.616] : DRAGGING STOPPED
-[18.631] : DRAGGING STOPPED
-[18.66] : DRAGGING STOPPED
-[18.671] : DRAGGING STARTED
-[18.674] : DRAGGING
-[18.682] : DRAGGING
-[18.69] : DRAGGING
-[18.7] : DRAGGING STOPPED
-[18.742] : DRAGGING STARTED
-[18.746] : DRAGGING
-[18.752] : DRAGGING
-[18.755] : DRAGGING
-[18.755] : DRAGGING
-[18.767] : DRAGGING STOPPED
-[18.784] : DRAGGING STARTED
-[18.794] : DRAGGING
-[18.795] : DRAGGING
-[18.796] : DRAGGING
-[18.796] : DRAGGING
-[18.796] : DRAGGING
-[18.797] : DRAGGING
-[18.797] : DRAGGING
-[18.821] : DRAGGING STARTED
-[18.821] : DRAGGING
-[18.822] : DRAGGING
-[18.822] : DRAGGING
-[18.823] : DRAGGING
-[18.823] : DRAGGING
-[18.823] : DRAGGING
-[18.824] : DRAGGING
-[18.824] : DRAGGING
-[18.829] : DRAGGING
-[18.83] : DRAGGING
-[18.831] : DRAGGING
-[18.845] : DRAGGING STOPPED
+[14.07] : ---------Program started---------
+[14.07] : Loading Pineapple-Studio/API/Bedrock
+[14.071] : Successfully loaded Pineapple-Studio/API/Bedrock
+[14.071] : Loading Pineapple-Studio/Util/Extension
+[14.071] : Successfully loaded Pineapple-Studio/Util/Extension
+[14.071] : Loading Pineapple-Studio/Util/ExtensionManager
+[14.071] : Successfully loaded Pineapple-Studio/Util/ExtensionManager
+[14.071] : Loading Pineapple-Studio/Util/Project
+[14.071] : Successfully loaded Pineapple-Studio/Util/Project
+[14.071] : Loading Pineapple-Studio/Util/ProjectManager
+[14.071] : Successfully loaded Pineapple-Studio/Util/ProjectManager
+[14.071] : Loading Pineapple-Studio/Util/RandomKeyGenerator
+[14.071] : Successfully loaded Pineapple-Studio/Util/RandomKeyGenerator
+[14.071] : Loading Pineapple-Studio/Util/Scene
+[14.071] : Successfully loaded Pineapple-Studio/Util/Scene
+[14.071] : Loading Pineapple-Studio/Util/SceneManager
+[14.071] : Successfully loaded Pineapple-Studio/Util/SceneManager
+[14.071] : Loading Pineapple-Studio/Util/SceneTransitionAnimation
+[14.071] : Successfully loaded Pineapple-Studio/Util/SceneTransitionAnimation
+[14.071] : Loading Pineapple-Studio/Util/SharedPreferences
+[14.071] : Successfully loaded Pineapple-Studio/Util/SharedPreferences
+[14.071] : Loading Pineapple-Studio/Scene/MainMenuScene
+[14.071] : Successfully loaded Pineapple-Studio/Scene/MainMenuScene
+[14.071] : Loading Pineapple-Studio/Scene/ProjectViewScene
+[14.071] : Successfully loaded Pineapple-Studio/Scene/ProjectViewScene
+[14.071] : Loading Pineapple-Studio/Scene/ProjectWizardScene
+[14.071] : Successfully loaded Pineapple-Studio/Scene/ProjectWizardScene
+[14.072] : Loading Pineapple-Studio/Extension/BasicFileViewerExtension
+[14.072] : Successfully loaded Pineapple-Studio/Extension/BasicFileViewerExtension
+[14.072] : Loading Pineapple-Studio/Extension/BasicProjectWizardExtension
+[14.072] : Successfully loaded Pineapple-Studio/Extension/BasicProjectWizardExtension
+[14.072] : Loading Pineapple-Studio/Extension/FileTreeToolBarExtension
+[14.072] : Successfully loaded Pineapple-Studio/Extension/FileTreeToolBarExtension
+[14.072] : Loaded 16/16 APIs
+[14.072] : Registered extension 'Basic file viewer'
+[14.072] : Registered extension 'Project Wizard'
+[14.072] : Registered extension 'File Tree'
+[14.072] : Set scene MainMenuScene
+[14.09] : Opening System/Projects/Appstore.program
+[14.09] : Project file found
+[14.09] : Refreshed project tree for System/Projects/Appstore.program
+[14.09] : Set scene ProjectViewScene
+[14.091] : Opened project
+[14.145] : System/Projects/Appstore.program/main.lua
+[14.146] : System/Projects/Appstore.program/main.lua
+[14.165] : System/Projects/Appstore.program/2isp.psp
+[14.166] : System/Projects/Appstore.program/2isp.psp
+[14.183] : System/Projects/Appstore.program/main.lua
+[14.184] : System/Projects/Appstore.program/main.lua
