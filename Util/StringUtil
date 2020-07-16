@@ -1,0 +1,12 @@
+-- Converts the elements of a table into a lines of string
+function tableToString(tbl, firstPos, lastPos)
+  local a = firstPos or 1
+  local b = lastPos or #tbl
+
+  local str = ""
+  for i = a, b do
+    str = str..tbl[i].."\n"
+  end
+    
+  return str
+end

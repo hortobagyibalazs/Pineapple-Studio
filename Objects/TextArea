@@ -1,0 +1,232 @@
+BackgroundColour = colors.white
+SelectedBackgroundColour = colors.lightBlue
+SelectedTextColour = colours.white
+TextColour = colours.black
+Text = {}
+TextOffset = {X = 0, Y = 0}
+CursorPos = {X = 1, Y = 1}
+DragStart = {1, 1}
+Dragging = false
+TabSize = 2
+Editable = true
+
+OnDraw = function(self, x, y)
+  -- Draw background
+	Drawing.DrawBlankArea(x, y, self.Width, self.Height, self.BackgroundColour)
+  
+  -- Display text
+  self:DrawText(x, y)
+  
+  -- Display cursor if necessary
+  self.Bedrock.CursorPos = {x + self.CursorPos.X - self.TextOffset.X - 1, y + self.CursorPos.Y - self.TextOffset.Y - 1}
+  self.Bedrock.CursorColour = self.TextColour
+  self:UpdateCursorVisibility(x, y)
+end
+
+UpdateCursorVisibility = function(self, x, y)
+  local cursorX = self.CursorPos.X - self.TextOffset.X
+  local cursorY = self.CursorPos.Y - self.TextOffset.Y
+  
+  if 1 > cursorX or cursorX > self.Width or 1 > cursorY or cursorY > self.Height then
+    self.Bedrock.CursorPos = nil
+  end
+end
+
+DrawText = function(self, x, y)  
+  for i = 1, self.Height do
+    local line = self.Text[i + self.TextOffset.Y]
+    if line == nil then line = "" end
+    line:sub(self.TextOffset.X)
+        
+    Drawing.DrawCharacters(x, y + i - 1, line, self.TextColour, self.BackgroundColour)
+  end
+end
+
+OnClick = function(self, event, side, x, y)
+  self.CursorPos.X = x + self.TextOffset.X
+  self.CursorPos.Y = y + self.TextOffset.Y
+  
+  local line = self.Text[self.CursorPos.Y]
+  if line == nil then
+    self.CursorPos.X = 1
+  elseif #line < self.CursorPos.X then
+    self.CursorPos.X = #line + 1
+  end
+  
+	self.Bedrock:SetActiveObject(self)
+  
+  if not self.Dragging then
+    self.DragStart = self.CursorPos
+  end
+  
+  self:ForceDraw()
+end
+
+OnDrag = function(self, event, side, x, y)
+	self:OnClick(event, side, x, y)
+end
+
+OnScroll = function(self, event, direction)
+  local scrollingDown = (direction == 1)
+  
+  if (scrollingDown and #self.Text - self.TextOffset.Y > self.Height) or (not scrollingDown and self.TextOffset.Y > 0) then
+    self.TextOffset.Y = self.TextOffset.Y + direction
+    self:ForceDraw()
+  end
+  
+  if (not scrollingDown) and self.TextOffset.Y + direction >= 0 then
+    self.TextOffset.Y = self.TextOffset.Y + direction
+    self:ForceDraw()
+  end 
+end
+
+OnKeyChar = function(self, event, keychar)
+  -- removes leading whitespaces from string
+  local ltrim = function(s)
+    return (s:gsub("^%s*", ""))
+  end
+  
+	local deleteSelected = function()
+	--[[	if self.Selected then
+			local startPos = self.DragStart
+			local endPos = self.CursorPos
+			if startPos > endPos then
+				startPos = self.CursorPos
+				endPos = self.DragStart
+			end
+			self.Text = self.Text:sub(1, startPos) .. self.Text:sub(endPos + 2)
+			self.CursorPos = startPos
+			self.DragStart = nil
+			self.Selected = false
+			return true
+		end--]]
+	end
+
+	if event == 'char' then
+    if not self.Editable then return end
+  
+		--deleteSelected()
+		if keychar == 'nil' then
+			return
+		end
+    
+    if self.Text[self.CursorPos.Y] == nil then self.Text[self.CursorPos.Y] = "" end
+		self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 1) .. keychar .. self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
+		self.CursorPos.X = self.CursorPos.X + 1
+    
+    if self.OnChange then self:OnChange() end
+    
+    self:ForceDraw()
+
+		return false
+	elseif event == 'key' then
+		if keychar == keys.enter then
+      if not self.Editable then return end
+    
+      local linePosX = #self.Text[self.CursorPos.Y] - #ltrim(self.Text[self.CursorPos.Y])
+      local newLine = string.rep(" ", linePosX)..self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
+      self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 1)
+      table.insert(self.Text, self.CursorPos.Y + 1, newLine)
+      self.CursorPos = {X = linePosX + 1, Y = self.CursorPos.Y + 1}
+      self.TextOffset.X = 0
+      
+      if self.OnChange then self:OnChange() end
+      
+      self:ForceDraw()
+      
+    elseif keychar == keys.left then
+			-- Left
+      self.CursorPos.X = self.CursorPos.X - 1
+			if self.CursorPos.X < 1 then
+        if self.CursorPos.Y > 1 then
+          self.CursorPos = {X = #self.Text[self.CursorPos.Y - 1] + 1, Y = self.CursorPos.Y - 1}
+        else
+          self.CursorPos.X = 1
+        end
+      end
+      self:ForceDraw()
+      
+		elseif keychar == keys.right then
+			-- Right				
+      local line = self.Text[self.CursorPos.Y]
+      if line == nil then line = "" end
+      self.CursorPos.X = self.CursorPos.X + 1
+			if self.CursorPos.X > #line + 1 then
+        self.CursorPos.X = 1
+        
+        if self.Text[self.CursorPos.Y + 1] ~= nil then 
+          self.CursorPos.Y = self.CursorPos.Y + 1
+        else
+          self.CursorPos.X = #line
+        end
+      end
+      self:ForceDraw()
+      
+    elseif keychar == keys.up then
+      if self.CursorPos.Y > 1 then
+        self.CursorPos.Y = self.CursorPos.Y - 1
+      end
+      
+      if #self.Text[self.CursorPos.Y] < self.CursorPos.X then
+        self.CursorPos.X = #self.Text[self.CursorPos.Y] + 1
+      end
+      
+      self:ForceDraw()
+    elseif keychar == keys.down then
+      if self.CursorPos.Y <= #self.Text then
+        self.CursorPos.Y = self.CursorPos.Y + 1
+      end
+      
+      if #self.Text[self.CursorPos.Y] < self.CursorPos.X then
+        self.CursorPos.X = #self.Text[self.CursorPos.Y] + 1
+      end
+      
+      self:ForceDraw()
+		elseif keychar == keys.backspace then
+      if not self.Editable then return end
+    
+			-- Backspace
+			if self.CursorPos.X > 1 then
+				self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 2)..self.Text[self.CursorPos.Y]:sub(self.CursorPos.X) 
+        self.CursorPos.X = self.CursorPos.X - 1
+      elseif self.CursorPos.Y > 1 then
+        local length = #self.Text[self.CursorPos.Y - 1] 
+        self.Text[self.CursorPos.Y - 1] = self.Text[self.CursorPos.Y - 1]..self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
+        table.remove(self.Text, self.CursorPos.Y)
+        self.CursorPos.Y = self.CursorPos.Y - 1
+        self.CursorPos.X = length + 1
+      end
+      
+      if self.OnChange then self:OnChange() end
+      self:ForceDraw()
+    elseif keychar == keys.tab then
+      if self.Text[self.CursorPos.Y] == nil then self.Text[self.CursorPos.Y] = "" end
+		self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 1) .. string.rep(" ", self.TabSize) .. self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
+		self.CursorPos.X = self.CursorPos.X + self.TabSize
+      if self.OnChange then self:OnChange() end
+    
+      self:ForceDraw()
+    elseif keychar == keys["end"] then
+      local line = self.Text[self.CursorPos.Y]
+      if line == nil then line = "" end
+      
+      self.CursorPos.X = #line + 1
+    
+      self:ForceDraw()
+    elseif keychar == keys.home then
+      local line = self.Text[self.CursorPos.Y]
+      if line == nil then line = "" end
+      
+      if self.CursorPos.X == 1 then
+        local trimmedLine = ltrim(line)
+        self.CursorPos.X = #line - #trimmedLine + 1
+      else
+        self.CursorPos.X = 1
+      end
+    
+      self:ForceDraw()
+		else      
+      return false
+		end
+	end
+end

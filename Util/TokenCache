@@ -1,0 +1,31 @@
+function TokenCache()
+  local self = {}
+  
+  local tokens = {}
+  
+  self.parseCode = function(code)
+    tokens = lexer.lex(code)
+  end
+  
+  self.getTokenAt = function(i)
+    return tokens[i]
+  end
+  
+  self.getTokens = function()
+    return tokens
+  end
+  
+  -- Not yet implemented
+  self.update = function(code, i)
+    --[[local new_tokens = lexer.lex(code)
+    for k, v in pairs(new_tokens) do
+      tokens[i + k - 1] = v
+    end]]
+  end
+  
+  self.clear = function()
+    tokens = {}
+  end
+  
+  return self
+end

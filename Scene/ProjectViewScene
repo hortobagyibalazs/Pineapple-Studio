@@ -61,6 +61,10 @@ function ProjectViewScene(program)
     local draggingRightToolBar = false
     local draggingBottomToolBar = false
     
+    self.view:GetObject("LeftToolBarResizeDraggable").InterceptingDragEvents = function(self)
+      return draggingLeftToolBar
+    end
+    
     self.view:GetObject("LeftToolBarResizeDraggable").OnClick = function(_self)
       draggingLeftToolBar = true
       draggingRightToolBar = false
@@ -72,6 +76,10 @@ function ProjectViewScene(program)
       
       self.view:GetObject("LeftToolBar").Z = math.max(self.view:GetObject("RightToolBar").Z,
       self.view:GetObject("BottomToolBar").Z) + 1
+    end
+    
+    self.view:GetObject("RightToolBarResizeDraggable").InterceptingDragEvents = function(self)
+      return draggingRightToolBar
     end
     
     self.view:GetObject("RightToolBarResizeDraggable").OnClick = function(_self)
@@ -87,6 +95,10 @@ function ProjectViewScene(program)
       self.view:GetObject("BottomToolBar").Z) + 1
     end
     
+    self.view:GetObject("BottomToolBarResizeDraggable").InterceptingDragEvents = function(self)
+      return draggingBottomToolBar
+    end
+    
     self.view:GetObject("BottomToolBarResizeDraggable").OnClick = function(_self)
       draggingBottomToolBar = true
       draggingLeftToolBar = false
@@ -100,6 +112,32 @@ function ProjectViewScene(program)
       self.view:GetObject("LeftToolBar").Z) + 1
     end
     
+    program.View.DoClick = function(_self, object, event, side, x, y)
+      local interceptingDragEvents = false
+    
+      local function checkIfChildInterceptsDragEvents(view)
+        if type(view.Children) ~= "table" then return end
+        for k, v in pairs(view.Children) do
+          if v.InterceptingDragEvents ~= nil and v:InterceptingDragEvents() then
+            interceptingDragEvents = true
+          end
+          checkIfChildInterceptsDragEvents(v)
+        end
+      end
+      
+      checkIfChildInterceptsDragEvents(_self)
+    
+      if object and (not interceptingDragEvents) then
+        if _self:CheckClick(object, x, y) then
+          local offset = {X = 0, Y = 0}
+          if not object.Fixed and _self.ChildOffset then
+            offset = _self.ChildOffset
+          end
+          return object:Click(event, side, x - object.X - offset.X + 1, y - object.Y + 1 - offset.Y)
+        end
+      end
+    end	
+    
     program.View.OnDrag = function(_, event, button, x, y)
       if draggingLeftToolBar then
         if (x >= self.view:GetObject("RightToolBar").X) then 
@@ -110,6 +148,8 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("LeftToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
+        
+        return true
       end
       
       if draggingRightToolBar then
@@ -122,6 +162,8 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("RightToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
+        
+        return true
       end
       
       if draggingBottomToolBar then
@@ -134,6 +176,8 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("BottomToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
+        
+        return true
       end
     end
     
@@ -231,7 +275,7 @@ function ProjectViewScene(program)
         for k, v in pairs(fileViewers) do
           if v.canOpenFile(path) then
             self.view:GetObject("FileView"):RemoveAllObjects()
-            self.view:GetObject("FileView"):AddObject(v.getView())
+            self.view:GetObject("FileView"):AddObject(v.getView(path))
             self.view:GetObject("FileView"):OnUpdate()
             break
           end

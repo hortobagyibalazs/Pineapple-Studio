@@ -106,7 +106,6 @@ end
 
 program.sharedPreferences.edit("firstRun", false)
 
-
 -- Enter program's main loop
 program:Run(function()
   program.projectManager.addProjectChangeListener(function(project)

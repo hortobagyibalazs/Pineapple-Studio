@@ -1,0 +1,46 @@
+Inherit = "TextArea"
+Tokens = TokenCache()
+Style = {
+    ["background"] = colors.gray,
+    ["whitespace"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
+    ["comment"] = {["tc"] = colors.green, ["bc"] = colors.transparent},
+    ["string"] = {["tc"] = colors.red, ["bc"] = colors.transparent},
+    ["escape"] = {["tc"] = colors.red, ["bc"] = colors.transparent},
+    ["keyword"] = {["tc"] = colors.cyan, ["bc"] = colors.transparent},
+    ["value"] = {["tc"] = colors.yellow, ["bc"] = colors.transparent},
+    ["ident"] = {["tc"] = colors.lightGray, ["bc"] = colors.transparent},
+    ["number"] = {["tc"] = colors.yellow, ["bc"] = colors.transparent},
+    ["symbol"] = {["tc"] = colors.lightGray, ["bc"] = colors.transparent},
+    ["operator"] = {["tc"] = colors.lightGray, ["bc"] = colors.transparent},
+    ["unidentified"] = {["tc"] = colors.pink, ["bc"] = colors.white}
+}
+
+OnUpdate = function(self)
+  self.BackgroundColour = self.Style.background
+end
+
+OnChange = function(self, range)
+  self.Tokens.parseCode(tableToString(self.Text))
+end
+
+DrawText = function(self, x, y)
+  for i = 1, self.Height do
+    local line = self.Text[i + self.TextOffset.Y]
+    if line == nil then line = "" end
+    line = line:sub(self.TextOffset.X)
+    
+    local tokensAtLine = self.Tokens.getTokenAt(i + self.TextOffset.Y)
+    if tokensAtLine == nil then
+      break
+    end
+    
+    for k, token in pairs(tokensAtLine) do
+      local type = token["type"]
+      local data = token["data"]
+      local posFirst = token["posFirst"]
+      local posLast = token["posLast"]
+        
+      Drawing.DrawCharacters(x + posFirst - 1, y + i - 1, data, self.Style[type]["tc"], self.BackgroundColour)  
+    end
+  end
+end
