@@ -4,9 +4,13 @@ function Project(_path, _name, _singleFile)
   local name = _name
   local path = _path
   local singleFileProject = _singleFile
-  local projectTree = {}
-  
+  local projectTree = {}  
   local listeners = {}
+  
+  local projectSettings = SharedPreferences()
+  projectSettings.getFilePath = function()
+    return self.getProjectFile()
+  end
   
   self.getName = function()
     return name
@@ -18,6 +22,17 @@ function Project(_path, _name, _singleFile)
   
   self.getProjectDir = function()
     return path.."/"..name
+  end
+  
+  self.getProjectFile = function()
+    local file = nil
+    
+    for k, v in pairs(projectTree) do
+      if v["Type"] == "File" and v["Name"]:sub(-4) == "."..PROJECT_FILE_EXT then
+        file = v["Path"].."/"..v["Name"]
+      end
+    end
+    return file
   end
   
   self.getProjectTree = function()
@@ -53,7 +68,7 @@ function Project(_path, _name, _singleFile)
     if self.onProjectTreeRefresh then
       self.onProjectTreeRefresh()
     end
-    Logger.log("Refreshed project tree for "..self.getProjectDir())
+    Logger.log("Project: Refreshed project tree for "..self.getProjectDir())
     
     for k, v in pairs(listeners) do
       v()
@@ -76,6 +91,10 @@ function Project(_path, _name, _singleFile)
   
   self.singleFile = function()
     return singleFileProject
+  end
+  
+  self.getProjectSettings = function()
+    return projectSettings
   end
   
   return self

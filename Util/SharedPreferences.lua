@@ -1,29 +1,31 @@
-function SharedPreferences(programInst)
+function SharedPreferences(_path)
   local self = {}
   
-  local program = programInst
+  local filePath = _path
   
-  local function createFileIfNotExists()
-    if not fs.exists(self.getFilePath()) then
-      local file = fs.open(self.getFilePath(), "w")
+  local function createFileIfNotExists(path)
+    if not fs.exists(path) then
+      local file = fs.open(path, "w")
       file.close()
     end
   end
   
   function self.getFilePath()
-    return program.ProgramPath.."/Config/preferences.lua"
+    return filePath
   end
   
   function self.read()
-    createFileIfNotExists()
+    createFileIfNotExists(self.getFilePath())
 
     local file = fs.open(self.getFilePath(), "r")
     self.values = textutils.unserialize(file.readAll())
     file.close()  
+    
+    return self.values
   end
   
   function self.getOrDefault(key, default) 
-    if self.values.key ~= nil then
+    if self.values ~= nil and self.values.key ~= nil then
       return self.values.key
     else
       return default
@@ -31,7 +33,7 @@ function SharedPreferences(programInst)
   end
   
   function self.edit(key, value)
-    createFileIfNotExists()
+    createFileIfNotExists(self.getFilePath())
 
     local file = fs.open(self.getFilePath(), "r")
     local tbl = textutils.unserialize(file.readAll())
@@ -44,6 +46,5 @@ function SharedPreferences(programInst)
     file.close()
   end
   
-  self.read()
   return self
 end

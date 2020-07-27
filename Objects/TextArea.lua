@@ -1,7 +1,7 @@
 BackgroundColour = colors.white
 SelectedBackgroundColour = colors.lightBlue
-SelectedTextColour = colours.white
-TextColour = colours.black
+SelectedTextColour = colors.white
+TextColour = colors.black
 Text = {}
 TextOffset = {X = 0, Y = 0}
 CursorPos = {X = 1, Y = 1}
@@ -9,6 +9,7 @@ DragStart = {1, 1}
 Dragging = false
 TabSize = 2
 Editable = true
+OnTextChangeListeners = {}
 
 OnDraw = function(self, x, y)
   -- Draw background
@@ -21,6 +22,21 @@ OnDraw = function(self, x, y)
   self.Bedrock.CursorPos = {x + self.CursorPos.X - self.TextOffset.X - 1, y + self.CursorPos.Y - self.TextOffset.Y - 1}
   self.Bedrock.CursorColour = self.TextColour
   self:UpdateCursorVisibility(x, y)
+end
+
+OnUpdate = function(self)
+  if #self.Text == nil then
+    self.Text = {""}
+  end
+end
+
+Reset = function(self)
+  self.Text = {}
+  
+  self.CursorPos = {X = 1, Y = 1}
+  self.TextOffset = {X = 0, Y = 0}
+  
+  self:ForceDraw()
 end
 
 UpdateCursorVisibility = function(self, x, y)
@@ -42,7 +58,38 @@ DrawText = function(self, x, y)
   end
 end
 
+DoChange = function(self, range)
+  for k, v in pairs(self.OnTextChangeListeners) do
+    if v ~= nil then
+      v(self, range)
+    end
+  end
+end
+
+AddOnTextChangeListener = function(self, callback)
+  table.insert(self.OnTextChangeListeners, callback)
+end
+
+RemoveOnTextChangeListener = function(self, callback)
+  table.remove(self.OnTextChangeListeners, callback)
+end
+
+RemoveOnTextChangeListeners = function(self)
+  self.OnTextChangeListeners = {}
+end
+
 OnClick = function(self, event, side, x, y)
+  self.Bedrock:SetActiveObject(self)
+
+  if self.Text[y + self.TextOffset.Y] == nil and (y + self.TextOffset.Y ~= 1) then
+    self.CursorPos.Y = #self.Text
+    self.CursorPos.X = #(self.Text[self.CursorPos.Y]) + 1
+    
+    self:ForceDraw()
+    
+    return
+  end
+  
   self.CursorPos.X = x + self.TextOffset.X
   self.CursorPos.Y = y + self.TextOffset.Y
   
@@ -53,8 +100,7 @@ OnClick = function(self, event, side, x, y)
     self.CursorPos.X = #line + 1
   end
   
-	self.Bedrock:SetActiveObject(self)
-  
+  self.DragEnd = nil
   if not self.Dragging then
     self.DragStart = self.CursorPos
   end
@@ -63,7 +109,15 @@ OnClick = function(self, event, side, x, y)
 end
 
 OnDrag = function(self, event, side, x, y)
+  self.Dragging = true
+  
 	self:OnClick(event, side, x, y)
+  
+  self.DragEnd = {X = x, Y = y}
+end
+
+OnMouseRelease = function(self)
+  self.Dragging = false
 end
 
 OnScroll = function(self, event, direction)
@@ -71,11 +125,15 @@ OnScroll = function(self, event, direction)
   
   if (scrollingDown and #self.Text - self.TextOffset.Y > self.Height) or (not scrollingDown and self.TextOffset.Y > 0) then
     self.TextOffset.Y = self.TextOffset.Y + direction
+    
+    if self.OnTextOffsetChange then self:OnTextOffsetChange() end
     self:ForceDraw()
   end
   
   if (not scrollingDown) and self.TextOffset.Y + direction >= 0 then
     self.TextOffset.Y = self.TextOffset.Y + direction
+    
+    if self.OnTextOffsetChange then self:OnTextOffsetChange() end
     self:ForceDraw()
   end 
 end
@@ -114,7 +172,7 @@ OnKeyChar = function(self, event, keychar)
 		self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 1) .. keychar .. self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
 		self.CursorPos.X = self.CursorPos.X + 1
     
-    if self.OnChange then self:OnChange() end
+    self:DoChange({self.CursorPos.Y, self.CursorPos.Y})
     
     self:ForceDraw()
 
@@ -128,9 +186,15 @@ OnKeyChar = function(self, event, keychar)
       self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 1)
       table.insert(self.Text, self.CursorPos.Y + 1, newLine)
       self.CursorPos = {X = linePosX + 1, Y = self.CursorPos.Y + 1}
+      
+      local offsetChanged = false
+      if self.TextOffset.X ~= 0 then
+        offsetChanged = true
+      end
       self.TextOffset.X = 0
       
-      if self.OnChange then self:OnChange() end
+      if offsetChanged and self.OnTextOffsetChange then self:OnTextOffsetChange() end
+      self:DoChange({self.CursorPos.Y - 1, self.CursorPos.Y})
       
       self:ForceDraw()
       
@@ -144,6 +208,7 @@ OnKeyChar = function(self, event, keychar)
           self.CursorPos.X = 1
         end
       end
+      
       self:ForceDraw()
       
 		elseif keychar == keys.right then
@@ -160,6 +225,7 @@ OnKeyChar = function(self, event, keychar)
           self.CursorPos.X = #line
         end
       end
+      
       self:ForceDraw()
       
     elseif keychar == keys.up then
@@ -172,8 +238,9 @@ OnKeyChar = function(self, event, keychar)
       end
       
       self:ForceDraw()
+      
     elseif keychar == keys.down then
-      if self.CursorPos.Y <= #self.Text then
+      if self.CursorPos.Y < #self.Text then
         self.CursorPos.Y = self.CursorPos.Y + 1
       end
       
@@ -182,29 +249,34 @@ OnKeyChar = function(self, event, keychar)
       end
       
       self:ForceDraw()
+      
 		elseif keychar == keys.backspace then
       if not self.Editable then return end
     
+      local range = {self.CursorPos.Y, self.CursorPos.Y}
 			-- Backspace
 			if self.CursorPos.X > 1 then
 				self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 2)..self.Text[self.CursorPos.Y]:sub(self.CursorPos.X) 
         self.CursorPos.X = self.CursorPos.X - 1
       elseif self.CursorPos.Y > 1 then
+        if self.Text[self.CursorPos.Y - 1] == nil then self.Text[self.CursorPos.Y - 1] = "" end
         local length = #self.Text[self.CursorPos.Y - 1] 
         self.Text[self.CursorPos.Y - 1] = self.Text[self.CursorPos.Y - 1]..self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
         table.remove(self.Text, self.CursorPos.Y)
         self.CursorPos.Y = self.CursorPos.Y - 1
         self.CursorPos.X = length + 1
+        
+        range = {self.CursorPos.Y, self.CursorPos.Y + 1}
       end
       
-      if self.OnChange then self:OnChange() end
+      self:DoChange(range)
       self:ForceDraw()
     elseif keychar == keys.tab then
       if self.Text[self.CursorPos.Y] == nil then self.Text[self.CursorPos.Y] = "" end
 		self.Text[self.CursorPos.Y] = self.Text[self.CursorPos.Y]:sub(1, self.CursorPos.X - 1) .. string.rep(" ", self.TabSize) .. self.Text[self.CursorPos.Y]:sub(self.CursorPos.X)
 		self.CursorPos.X = self.CursorPos.X + self.TabSize
-      if self.OnChange then self:OnChange() end
     
+      self:DoChange({self.CursorPos.Y, self.CursorPos.Y})
       self:ForceDraw()
     elseif keychar == keys["end"] then
       local line = self.Text[self.CursorPos.Y]
@@ -225,8 +297,8 @@ OnKeyChar = function(self, event, keychar)
       end
     
       self:ForceDraw()
-		else      
-      return false
 		end
+    
+    if self.OnKeyPress then self:OnKeyPress(keychar) end
 	end
 end

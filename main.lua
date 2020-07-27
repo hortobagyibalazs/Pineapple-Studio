@@ -25,16 +25,16 @@ local function loadApis(path, loadMethod, blacklist)
   else
     if not isBlacklisted(path, blacklist) then
       totalApis = totalApis + 1
-      Logger.log("Loading "..path)
+      Logger.log("main: Loading "..path)
       local loaded = loadMethod(path)
       if loaded ~= false then
         loadedApis = loadedApis + 1
         if loaded ~= nil then
           table.insert(results, loaded)
         end
-        Logger.log("Successfully loaded "..path)
+        Logger.log("main: Successfully loaded "..path)
       else
-        Logger.log("Error: failed to load "..path)
+        Logger.log("main: Error: failed to load "..path)
       end
     end
   end
@@ -85,13 +85,13 @@ for k, v in pairs(ApiFolders) do
     end
   end
 end
-Logger.log("Loaded "..loadedApis.."/"..totalApis.." APIs")
+Logger.log("main: Loaded "..loadedApis.."/"..totalApis.." APIs")
 
 -- Initialize main services
 local program = Bedrock:Initialise(programPath)
 program.version = VERSION
 
-program.sharedPreferences = SharedPreferences(program)
+program.sharedPreferences = SharedPreferences(program.ProgramPath.."/Config/preferences.lua")
 program.sceneManager = SceneManager(program)
 program.projectManager = ProjectManager(program)
 program.extensionManager = ExtensionManager(program)
@@ -104,6 +104,7 @@ program.sceneManager.onSceneChange = function(scene)
   program.extensionManager.notify()
 end
 
+program.sharedPreferences.read()
 program.sharedPreferences.edit("firstRun", false)
 
 -- Enter program's main loop
@@ -122,6 +123,8 @@ program:Run(function()
     end
   end]]
   
-  program.sceneManager.setScene(MainMenuScene(program))
-  --program.projectManager.open(Project("", "Test"))
+  --program.sceneManager.setScene(MainMenuScene(program))
+  
+  local project = Project("System/Projects/", "Appstore.program")
+  program.projectManager.open(project)
 end)

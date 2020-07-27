@@ -29,7 +29,7 @@ function BasicProjectWizardExtension()
       }
     },
     function()
-      Logger.log("Done!")
+      Logger.log("BasicProjectWizardExtension: Done!")
       
       local fileName = scene.getComponent("ProjectWizard").getObject("FileNameTextBox").Text
       local filePath = scene.getComponent("ProjectWizard").getObject("FilePathTextBox").Text
@@ -39,7 +39,7 @@ function BasicProjectWizardExtension()
       if not fs.exists(filePath.."/"..fileName) then
         scene.getComponent("ProjectManager").obtain().open(project)
       else
-        Logger.log(filePath.."/"..fileName.." already exists!")
+        Logger.log("BasicProjectWizardExtension: "..filePath.."/"..fileName.." already exists!")
       end
     end)
     
@@ -69,7 +69,7 @@ function BasicProjectWizardExtension()
       }
     },
     function()
-      Logger.log("Done!")
+      Logger.log("BasicProjectWizardExtension: Done!")
       
       local fileName = scene.getComponent("ProjectWizard").getObject("ProjectNameTextBox").Text
       local filePath = scene.getComponent("ProjectWizard").getObject("ProjectPathTextBox").Text
@@ -79,7 +79,7 @@ function BasicProjectWizardExtension()
       if not fs.exists(filePath.."/"..fileName) then
         scene.getComponent("ProjectManager").obtain().open(project)
       else
-        Logger.log(filePath.."/"..fileName.." already exists!")
+        Logger.log("BasicProjectWizardExtension: "..filePath.."/"..fileName.." already exists!")
       end
     end)
     

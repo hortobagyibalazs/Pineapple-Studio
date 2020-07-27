@@ -8,9 +8,9 @@ function ProjectManager(programInst)
   local listeners = {}
   
   function self.open(project)
-    Logger.log("Opening "..project.getProjectDir())
+    Logger.log("ProjectManager: Opening "..project.getProjectDir())
     if not project.exists() then
-      Logger.log("Creating project directory and updating config file")
+      Logger.log("ProjectManager: Creating project directory and updating config file")
       if not project.singleFile() then
         fs.makeDir(project.getProjectDir())
       else
@@ -27,7 +27,7 @@ function ProjectManager(programInst)
       local projectFileExists = false
       for k, v in pairs(rootFiles) do
         if #v > 4 and v:sub(#v-#PROJECT_FILE_EXT) == "."..PROJECT_FILE_EXT then
-          Logger.log("Project file found")
+          Logger.log("ProjectManager: Project file found")
           projectFileExists = true
         end
       end
@@ -35,10 +35,14 @@ function ProjectManager(programInst)
       if not projectFileExists then
         local projectFilePath = project.getProjectDir().."/"..RandomKey()..".psp"
         local file = fs.open(projectFilePath, "w")
-        file.write(project.getName())
-        file.flush()
-        file.close()
-        Logger.log("Project file created")
+        if file then
+          file.write(project.getName())
+          file.flush()
+          file.close()
+          Logger.log("ProjectManager: Project file created")
+        else
+          Logger.log("ProjectManager: Couldn't create project file")
+        end
       end
     end
     
@@ -46,16 +50,16 @@ function ProjectManager(programInst)
       self.close()
       
       openProject = project
-      if not singleFile then
+      if not openProject.singleFile() then
         openProject.refreshProjectTree()
       end
       
       for k, v in pairs(listeners) do
         v(openProject)
       end
-      Logger.log("Opened project")
+      Logger.log("ProjectManager: Opened project")
     else
-      Logger.log("Reopen unnecessary")
+      Logger.log("ProjectManager: Skipped re-opening")
     end
   end
   

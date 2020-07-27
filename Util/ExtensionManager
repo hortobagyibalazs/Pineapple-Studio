@@ -5,7 +5,7 @@ function ExtensionManager(program)
   local lastScene = nil
   
   function self.addExtension(extension)
-    Logger.log("Registered extension '"..extension.getName().."'")
+    Logger.log("ExtensionManager: Registered extension '"..extension.getName().."'")
     table.insert(extensions, extension)
   end
   

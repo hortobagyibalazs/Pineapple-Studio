@@ -20,9 +20,9 @@ local function scanDir(path, deepScan)
 end
 
 local currentDir = nil
-local function loadListItems(list, files)
+local function loadListItems(scene, list, files)
   list.Items = {}
-  for k, v in pairs(files) do
+  for i, v in ipairs(files) do
     table.insert(list.Items, {
       RelativeWidth = "100%",
       Text = v.Name
@@ -31,8 +31,8 @@ local function loadListItems(list, files)
   end
 end
 
-function FileTreeToolBarExtension()
-  local self = Extension("File Tree")
+function FileExplorerToolBarExtension()
+  local self = Extension("File explorer")
   
   function self.onSceneLoad(scene)
     local listView = {
@@ -46,26 +46,30 @@ function FileTreeToolBarExtension()
     }
     
     listView.OnSelect = function(_self, item)
-      Logger.log(currentDir.."/"..item)
-      if item == "..." then
+      if item == ".." then
+        -- navigate up
         local parentDirItems = scanDir(fs.getDir(currentDir))
-        loadListItems(_self, parentDirItems) 
+        loadListItems(scene, _self, parentDirItems)
       elseif fs.isDir(currentDir.."/"..item) then
+        -- open folder
         local children = scanDir(currentDir.."/"..item)
-        loadListItems(_self, children)
+        loadListItems(scene, _self, children)
+          
         if currentDir ~= scene.getComponent("ProjectManager").obtain().getProject().getProjectDir() then
           table.insert(_self.Items, 1, {
             RelativeWidth = "100%",
-            Text = "..."
+            Text = ".."
           })
         end
       else
+        -- open file
+        Logger.log("Open file "..currentDir.."/"..item)
         scene.getComponent("FileViewer").openFile(currentDir.."/"..item)
-      end
+      end    
     end
   
-    loadListItems(listView, scene.getComponent("ProjectManager").obtain().getProject().getProjectTree())
-    scene.getComponent("ToolBar").add("File tree", listView)
+    loadListItems(scene, listView, scene.getComponent("ProjectManager").obtain().getProject().getProjectTree())
+    scene.getComponent("ToolBar").add("File explorer", listView)
   end
   
   function self.handleSceneLoad(scene)
@@ -75,5 +79,5 @@ function FileTreeToolBarExtension()
   return self
 end
 
-return FileTreeToolBarExtension()
+return FileExplorerToolBarExtension()
 

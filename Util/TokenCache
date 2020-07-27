@@ -3,8 +3,16 @@ function TokenCache()
   
   local tokens = {}
   
+  self.parseCodeWithoutCaching = function(code)
+    return lexer.lex(code)
+  end
+  
   self.parseCode = function(code)
     tokens = lexer.lex(code)
+  end
+  
+  self.setTokenAt = function(token, i)
+    tokens[i] = token
   end
   
   self.getTokenAt = function(i)

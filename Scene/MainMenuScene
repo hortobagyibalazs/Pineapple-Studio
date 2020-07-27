@@ -58,7 +58,7 @@ function MainMenuScene(program)
       local projectName = fs.getName(item)
       local project = Project(rootDir, projectName, false)
       
-      program.projectManager.open(project)
+      --program.projectManager.open(project)
     end
   end
   

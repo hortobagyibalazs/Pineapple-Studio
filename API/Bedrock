@@ -286,9 +286,6 @@ LoadImage = function(path, global)
 	}
 	if fs.exists(path) then
 		local _io = io
-		if OneOS and global then
-			_io = OneOS.IO
-		end
         local file = _io.open(path, "r")
         if not file then
         	error('Error Occured. _io:'..tostring(_io)..' OneOS: '..tostring(OneOS)..' OneOS.IO'..tostring(OneOS.IO)..' io: '..tostring(io))
@@ -2739,12 +2736,6 @@ function LoadView(self, name, draw)
 			self.View = View:InitialiseFile(self, view, name)
 			self:ReorderObjects()
 
-			if OneOS and view.ToolBarColour then
-				OneOS.ToolBarColour = view.ToolBarColour
-			end
-			if OneOS and view.ToolBarTextColour then
-				OneOS.ToolBarTextColour = view.ToolBarTextColour
-			end
 			if not self:GetActiveObject() then
 				self:SetActiveObject()
 			end
@@ -3101,10 +3092,6 @@ function DisplayOpenFileWindow(self, title, callback)
 			end
 		end
 	end
-	
-	if OneOS then
-		_fs = OneOS.FS
-	end
 
 	addFolder('','')
 
@@ -3240,8 +3227,6 @@ function DisplayOpenFileWindow(self, title, callback)
 
 	if startPath then
 		goToFolder(startPath)
-	elseif OneOS then
-		goToFolder('/Desktop/Documents/')
 	else
 		goToFolder('')
 	end
@@ -3279,9 +3264,6 @@ function DisplaySaveFileWindow(self, title, callback, extension, startPath)
 		end
 	end
 	
-	if OneOS then
-		_fs = OneOS.FS
-	end
 	addFolder('','')
 
 	local currentFolder = ''
@@ -3410,8 +3392,6 @@ function DisplaySaveFileWindow(self, title, callback, extension, startPath)
 
 	if startPath then
 		goToFolder(startPath)
-	elseif OneOS then
-		goToFolder('/Desktop/Documents/')
 	else
 		goToFolder('')
 	end
@@ -3549,9 +3529,6 @@ function Quit(self)
 	self.Running = false
 	if self.OnQuit then
 		self:OnQuit()
-	end
-	if OneOS then
-		OneOS.Close()
 	end
 end
 

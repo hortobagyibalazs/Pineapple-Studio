@@ -5,6 +5,9 @@ function ProjectViewScene(program)
   local toolbars = {}
   local menuBarItems = {}
   
+  local currentFileViewer = nil
+  local lastSaveTime = nil
+  
   function self.onStart()
     local function resizeChildren(parent) 
       for k, v in pairs(parent.Children) do
@@ -195,11 +198,14 @@ function ProjectViewScene(program)
   end
   
   self.loadComponents({
+  
     ["ProjectManager"] = {
       ["obtain"] = function()
         return program.projectManager
       end
     },
+    
+    
     ["MenuBar"] = {
       ["addMenu"] = function(extension, label)      
         local xCoords = {}
@@ -215,7 +221,7 @@ function ProjectViewScene(program)
           lastMenu = {[1] = 1, [2] = 0}
         end
         
-        Logger.log("Add menu '"..label.."' to MenuBar")
+        Logger.log("ProjectViewScene: Add menu '"..label.."' to MenuBar")
         self.view:GetObject("MenuBar"):AddObject({
           ["Type"] = "Button",
           ["Name"] = label.."Menu",
@@ -264,24 +270,73 @@ function ProjectViewScene(program)
       -- called when a file open event is fired
       -- canOpenFile : a 'function' typed parameter which receives a file path and returns a boolean
       -- getViewOnFileOpen: a 'function' typed parameter which returns a Bedrock view
-      ["addViewer"] = function(_name, fileCheckMethod, getViewOnFileOpen)
-        table.insert(fileViewers, {
-          name = _name,
-          canOpenFile = fileCheckMethod,
-          getView = getViewOnFileOpen
-        })
+      ["addViewer"] = function(viewer)
+        table.insert(fileViewers, viewer)
+        return viewer
       end,
-      ["openFile"] = function(path)
-        for k, v in pairs(fileViewers) do
-          if v.canOpenFile(path) then
-            self.view:GetObject("FileView"):RemoveAllObjects()
-            self.view:GetObject("FileView"):AddObject(v.getView(path))
-            self.view:GetObject("FileView"):OnUpdate()
-            break
+      ["getViewer"] = function(name)
+        return currentFileViewer
+      end,
+      ["getOpenFileViewer"] = function()
+        return currentFileViewer
+      end,
+      ["openFile"] = function(path, viewer)
+        if viewer ~= currentFileViewer and (currentFileViewer ~= nil and currentFileViewer.getOpenFilePath() == path) then
+          return
+        end
+      
+        local preferredViewer = nil
+        if viewer ~= nil and viewer.getFileCompatibilityLevel(path) > 0 then
+          preferredViewer = viewer
+        else
+          for k, v in pairs(fileViewers) do
+            if preferredViewer == nil and v.getFileCompatibilityLevel(path) > 0 then
+              preferredViewer = v
+            end
+            
+            if preferredViewer and preferredViewer.getFileCompatibilityLevel(path) < v.getFileCompatibilityLevel(path) then
+              preferredViewer = v
+            end
           end
         end
+        
+        if preferredViewer then
+          self.getComponent("FileViewer").saveOpenFile()
+          
+          currentFileViewer = preferredViewer
+          currentFileViewer.getOpenFilePath = function() return path end
+          
+          self.view:GetObject("FileView"):RemoveAllObjects()
+          self.view:GetObject("FileView"):AddObject(currentFileViewer.getView())
+          self.view:GetObject("FileView"):OnUpdate()
+        end
+      end,
+      ["saveOpenFile"] = function()
+        if currentFileViewer ~= nil then
+          local fileContent = currentFileViewer.getOpenFileContent()
+          local path = currentFileViewer.getOpenFilePath()
+      
+          if path then
+            local f = fs.open(path, "w")
+            if f then
+              lastSaveTime = os.clock()
+            
+              Logger.log("ProjectViewScene: Saving open file")
+              f.write(fileContent)
+              f.close()
+            end
+          end  
+        end
+      end,
+      ["getLastSaveTime"] = function()
+        return lastSaveTime
+      end,
+      ["getObject"] = function(name)
+        return self.view:GetObject("FileView"):GetObject(name)
       end
     },
+    
+    
     -- left, right, bottom tool bar
     ["ToolBar"] = {
       ["add"] = function(label, view)
@@ -289,7 +344,18 @@ function ProjectViewScene(program)
         
         self.view:GetObject("LeftToolBarContentView"):AddObject(view)
       end
+    },
+    
+    
+    ["Timer"] = {
+      ["startRepeatingTimer"] = function(func, interval)
+        return program:StartRepeatingTimer(func, interval)
+      end,
+      ["stop"] = function(timer)
+        program:StopTimer(timer)
+      end
     }
+    
   })
   
   return self

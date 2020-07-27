@@ -1,0 +1,35 @@
+function FileViewer(_name)
+  local self = {}
+  
+  if type(_name) ~= "string" then
+    error("FileViewer: FileViewer must be named")
+  end
+  
+  function self.getName()
+    return _name
+  end
+  
+  -- Do not override manually
+  function self.getOpenFilePath()
+    return nil
+  end
+
+  -- These are okay
+  function self.getFileCompatibilityLevel(path)
+    return 0
+  end
+  
+  function self.getOpenFileContent()
+    return nil
+  end
+  
+  function self.getLastContentChangeTime()
+    return nil
+  end
+  
+  function self.getView()
+    return nil
+  end
+  
+  return self
+end
