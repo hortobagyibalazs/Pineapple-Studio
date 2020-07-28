@@ -2,7 +2,7 @@ Inherit = "TextArea"
 Tokens = TokenCache()
 WhiteSpaceChar = "·"
 HighlightSyntax = true
-Style = {
+--[[Style = {
     ["highlight"] = colors.lightBlue,
     ["background"] = colors.gray,
     ["whitespace"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
@@ -16,9 +16,9 @@ Style = {
     ["symbol"] = {["tc"] = colors.lightGray, ["bc"] = colors.transparent},
     ["operator"] = {["tc"] = colors.lightGray, ["bc"] = colors.transparent},
     ["unidentified"] = {["tc"] = colors.pink, ["bc"] = colors.white}
-}
+}]]
 
---[[Style = {
+Style = {
     ["highlight"] = colors.lightGray,
     ["background"] = colors.white,
     ["whitespace"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
@@ -32,7 +32,7 @@ Style = {
     ["symbol"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
     ["operator"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
     ["unidentified"] = {["tc"] = colors.pink, ["bc"] = colors.white}
-}]]
+}
 
 OnLoad = function(self)
   self:AddOnTextChangeListener(function(_self, range)
@@ -88,9 +88,5 @@ DrawText = function(self, x, y)
       end
       Drawing.DrawCharacters(x + posFirst - 1, y + i - 1, data, self.Style[type]["tc"], bc)  
     end
-  end
-  
-  if self.DragStart and self.DragEnd then
-    Logger.log("DS_x: "..self.DragStart.X.."   DS_y: "..self.DragStart.Y.."   DE_x: "..self.DragEnd.X.."   DE_y: "..self.DragEnd.Y)
   end
 end

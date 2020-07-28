@@ -1,58 +1,100 @@
-[15.074] : ---------Program started---------
-[15.074] : main: Loading Pineapple-Studio/API/Bedrock
-[15.075] : main: Successfully loaded Pineapple-Studio/API/Bedrock
-[15.075] : main: Loading Pineapple-Studio/API/lexer
-[15.076] : main: Successfully loaded Pineapple-Studio/API/lexer
-[15.076] : main: Loading Pineapple-Studio/Util/Extension
-[15.076] : main: Successfully loaded Pineapple-Studio/Util/Extension
-[15.076] : main: Loading Pineapple-Studio/Util/ExtensionManager
-[15.076] : main: Successfully loaded Pineapple-Studio/Util/ExtensionManager
-[15.076] : main: Loading Pineapple-Studio/Util/FileViewer
-[15.077] : main: Successfully loaded Pineapple-Studio/Util/FileViewer
-[15.077] : main: Loading Pineapple-Studio/Util/Project
-[15.077] : main: Successfully loaded Pineapple-Studio/Util/Project
-[15.077] : main: Loading Pineapple-Studio/Util/ProjectManager
-[15.077] : main: Successfully loaded Pineapple-Studio/Util/ProjectManager
-[15.078] : main: Loading Pineapple-Studio/Util/RandomKeyGenerator
-[15.078] : main: Successfully loaded Pineapple-Studio/Util/RandomKeyGenerator
-[15.078] : main: Loading Pineapple-Studio/Util/Scene
-[15.078] : main: Successfully loaded Pineapple-Studio/Util/Scene
-[15.078] : main: Loading Pineapple-Studio/Util/SceneManager
-[15.078] : main: Successfully loaded Pineapple-Studio/Util/SceneManager
-[15.078] : main: Loading Pineapple-Studio/Util/SceneTransitionAnimation
-[15.079] : main: Successfully loaded Pineapple-Studio/Util/SceneTransitionAnimation
-[15.079] : main: Loading Pineapple-Studio/Util/SharedPreferences.lua
-[15.079] : main: Successfully loaded Pineapple-Studio/Util/SharedPreferences.lua
-[15.079] : main: Loading Pineapple-Studio/Util/StringUtil
-[15.079] : main: Successfully loaded Pineapple-Studio/Util/StringUtil
-[15.079] : main: Loading Pineapple-Studio/Util/TokenCache
-[15.08] : main: Successfully loaded Pineapple-Studio/Util/TokenCache
-[15.08] : main: Loading Pineapple-Studio/Scene/MainMenuScene
-[15.08] : main: Successfully loaded Pineapple-Studio/Scene/MainMenuScene
-[15.08] : main: Loading Pineapple-Studio/Scene/ProjectViewScene
-[15.081] : main: Successfully loaded Pineapple-Studio/Scene/ProjectViewScene
-[15.081] : main: Loading Pineapple-Studio/Scene/ProjectWizardScene
-[15.081] : main: Successfully loaded Pineapple-Studio/Scene/ProjectWizardScene
-[15.081] : main: Loading Pineapple-Studio/Extension/BasicFileViewerExtension.lua
-[15.081] : main: Successfully loaded Pineapple-Studio/Extension/BasicFileViewerExtension.lua
-[15.081] : main: Loading Pineapple-Studio/Extension/BasicProjectWizardExtension.lua
-[15.082] : main: Successfully loaded Pineapple-Studio/Extension/BasicProjectWizardExtension.lua
-[15.082] : main: Loading Pineapple-Studio/Extension/FileAutoSaveExtension.lua
-[15.082] : main: Successfully loaded Pineapple-Studio/Extension/FileAutoSaveExtension.lua
-[15.082] : main: Loading Pineapple-Studio/Extension/FileExplorerToolBarExtension.lua
-[15.083] : main: Successfully loaded Pineapple-Studio/Extension/FileExplorerToolBarExtension.lua
-[15.083] : main: Loaded 21/21 APIs
-[15.085] : ExtensionManager: Registered extension 'Basic file viewer ext.'
-[15.085] : ExtensionManager: Registered extension 'Project Wizard'
-[15.085] : ExtensionManager: Registered extension 'File auto save'
-[15.085] : ExtensionManager: Registered extension 'File explorer'
-[15.085] : ProjectManager: Opening System/Projects//Appstore.program
-[15.085] : ProjectManager: Project file found
-[15.086] : Project: Refreshed project tree for System/Projects//Appstore.program
-[15.086] : SceneManager: Set scene ProjectViewScene
-[15.088] : ProjectManager: Opened project
-[15.136] : Open file System/Projects//Appstore.program/main.lua
-[15.136] : BasicFileViewerExtension: Get file content from System/Projects//Appstore.program/main.lua
-[15.138] : Open file System/Projects//Appstore.program/main.lua
-[15.208] : ProjectViewScene: Saving open file
-[15.248] : ProjectViewScene: Saving open file
+[2.923] : ---------Program started---------
+[2.923] : main: Loading Pineapple-Studio/API/Bedrock
+[2.923] : main: Successfully loaded Pineapple-Studio/API/Bedrock
+[2.923] : main: Loading Pineapple-Studio/API/lexer
+[2.923] : main: Successfully loaded Pineapple-Studio/API/lexer
+[2.923] : main: Loading Pineapple-Studio/Util/Extension
+[2.923] : main: Successfully loaded Pineapple-Studio/Util/Extension
+[2.923] : main: Loading Pineapple-Studio/Util/ExtensionManager
+[2.923] : main: Successfully loaded Pineapple-Studio/Util/ExtensionManager
+[2.923] : main: Loading Pineapple-Studio/Util/FileViewer
+[2.923] : main: Successfully loaded Pineapple-Studio/Util/FileViewer
+[2.923] : main: Loading Pineapple-Studio/Util/Project
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/Project
+[2.924] : main: Loading Pineapple-Studio/Util/ProjectManager
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/ProjectManager
+[2.924] : main: Loading Pineapple-Studio/Util/RandomKeyGenerator
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/RandomKeyGenerator
+[2.924] : main: Loading Pineapple-Studio/Util/Scene
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/Scene
+[2.924] : main: Loading Pineapple-Studio/Util/SceneManager
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/SceneManager
+[2.924] : main: Loading Pineapple-Studio/Util/SceneTransitionAnimation
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/SceneTransitionAnimation
+[2.924] : main: Loading Pineapple-Studio/Util/SharedPreferences.lua
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/SharedPreferences.lua
+[2.924] : main: Loading Pineapple-Studio/Util/StringUtil
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/StringUtil
+[2.924] : main: Loading Pineapple-Studio/Util/ThemeManager.lua
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/ThemeManager.lua
+[2.924] : main: Loading Pineapple-Studio/Util/TokenCache
+[2.924] : main: Successfully loaded Pineapple-Studio/Util/TokenCache
+[2.924] : main: Loading Pineapple-Studio/Scene/MainMenuScene
+[2.924] : main: Successfully loaded Pineapple-Studio/Scene/MainMenuScene
+[2.924] : main: Loading Pineapple-Studio/Scene/ProjectViewScene.lua
+[2.924] : main: Successfully loaded Pineapple-Studio/Scene/ProjectViewScene.lua
+[2.924] : main: Loading Pineapple-Studio/Scene/ProjectWizardScene
+[2.924] : main: Successfully loaded Pineapple-Studio/Scene/ProjectWizardScene
+[2.925] : main: Loading Pineapple-Studio/Extension/BasicFileViewerExtension.lua
+[2.925] : main: Successfully loaded Pineapple-Studio/Extension/BasicFileViewerExtension.lua
+[2.925] : main: Loading Pineapple-Studio/Extension/BasicProjectWizardExtension.lua
+[2.925] : main: Successfully loaded Pineapple-Studio/Extension/BasicProjectWizardExtension.lua
+[2.925] : main: Loading Pineapple-Studio/Extension/FileAutoSaveExtension.lua
+[2.925] : main: Successfully loaded Pineapple-Studio/Extension/FileAutoSaveExtension.lua
+[2.925] : main: Loading Pineapple-Studio/Extension/FileExplorerToolBarExtension.lua
+[2.925] : main: Successfully loaded Pineapple-Studio/Extension/FileExplorerToolBarExtension.lua
+[2.925] : main: Loaded 22/22 APIs
+[2.925] : ExtensionManager: Registered extension 'Basic file viewer ext.'
+[2.925] : ExtensionManager: Registered extension 'Project Wizard'
+[2.925] : ExtensionManager: Registered extension 'File auto save'
+[2.925] : ExtensionManager: Registered extension 'File explorer'
+[2.925] : ThemeManager: Loaded theme 'pineapple'
+[2.925] : SceneManager: Set scene MainMenuScene
+[2.925] : Found type
+[2.925] : :(
+[2.925] : Found type
+[2.925] : :(
+[2.925] : Found type
+[2.926] : Style applied for CreateButton
+[2.926] : Found type
+[2.926] : Style applied for Button
+[2.926] : Found type
+[2.926] : Style applied for Button
+[2.926] : Found type
+[2.926] : Style applied for Button
+[2.932] : Found type
+[2.932] : :(
+[2.932] : Found type
+[2.932] : :(
+[2.932] : Found type
+[2.932] : Style applied for CreateButton
+[2.932] : Found type
+[2.932] : Style applied for Button
+[2.932] : Found type
+[2.932] : Style applied for Button
+[2.932] : Found type
+[2.932] : Style applied for Button
+[2.932] : Found type
+[2.932] : :(
+[2.932] : Found type
+[2.932] : :(
+[2.932] : Found type
+[2.932] : Style applied for CreateButton
+[2.932] : Found type
+[2.932] : Style applied for Button
+[2.932] : Found type
+[2.932] : Style applied for Button
+[2.932] : Found type
+[2.932] : Style applied for Button
+[2.933] : Found type
+[2.933] : :(
+[2.933] : Found type
+[2.933] : :(
+[2.933] : Found type
+[2.933] : Style applied for CreateButton
+[2.933] : Found type
+[2.933] : Style applied for Button
+[2.933] : Found type
+[2.933] : Style applied for Button
+[2.933] : Found type
+[2.933] : Style applied for Button

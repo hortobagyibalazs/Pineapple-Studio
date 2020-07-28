@@ -1,0 +1,50 @@
+-- ViewName: expects view name
+-- ParentName: expects parent view's name
+-- ParentType: expects a type of container
+-- ParentStyle: style automatically applied when parent has a specific style
+
+{
+  View = {
+    Default = {
+      BackgroundColour = "white"
+    },
+    MenuBar = {
+      BackgroundColour = "lightGray"
+    },
+    OpenFileBar = {
+      BackgroundColour = "white"
+    },
+    ResizableToolBar = {
+      BackgroundColour = "gray"
+    }
+  },
+  Label = {
+    ResizableToolBarDraggable = {
+      TextColour = "lightGray"
+    }
+  },
+  Button = {
+    Default = {
+      TextColour = "black",
+      ActiveTextColour = "white",
+      DisabledTextColour = "lightGray",
+      BackgroundColour = "lightGray",
+      ActiveBackgroundColour = "blue"
+    },
+    Flat = {
+      TextColour = "black",
+      ActiveTextColour = "orange",
+      DisabledTextColour = "lightGray",
+      BackgroundColour = "transparent",
+      ActiveBackgroundColour = "transparent",
+      DisabledBackgroundColour = "transparent"
+    },
+    OpenFileTab = {
+      ParentName = "OpenFileTabBar",
+      TextColour = "gray",
+      ActiveTextColour = "white",
+      BackgroundColour = "lightGray",
+      ActiveBackgroundColour = "cyan",
+    }
+  }
+}

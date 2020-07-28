@@ -5,6 +5,8 @@ function ProjectViewScene(program)
   local toolbars = {}
   local menuBarItems = {}
   
+  local onFileEventListeners = {}
+  
   local currentFileViewer = nil
   local lastSaveTime = nil
   
@@ -58,6 +60,55 @@ function ProjectViewScene(program)
       end
       
       resizeChildren(_self)
+    end
+    
+    local defaultOpenFileTabBarAttributes = {
+      self.view:GetObject("OpenFileTabBarHolder").X,
+      self.view:GetObject("OpenFileTabBarHolder").Y,
+      self.view:GetObject("OpenFileTabBarHolder").Width,
+      self.view:GetObject("OpenFileTabBarHolder").Height,
+    }
+    
+    self.view:GetObject("OpenFileTabBarHolder").OnUpdate = function(_self)
+      local width = _self.Width
+      
+      if self.view:GetObject("LeftToolBar").Visible then
+        _self.X = defaultOpenFileTabBarAttributes[1] + self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width - 1
+        width = program.View.Width - _self.X + 1
+      end
+      
+      if self.view:GetObject("RightToolBar").Visible then
+        width = width - self.view:GetObject("RightToolBar").Width
+      end
+      _self.Width = width
+      
+      local tabBar = self.view:GetObject("OpenFileTabBar")
+      local childOffset = 0
+      if tabBar.ChildOffset then
+        if tabBar.ChildOffset.X < 0 then
+          tabBar.ChildOffset.X = 0
+        end
+        
+        childOffset = tabBar.ChildOffset.X
+      end
+      
+      self.view:GetObject("BackScroller").Visible = (childOffset == 0)
+      
+      resizeChildren(_self)
+    end
+    
+    self.view:GetObject("BackScroller").OnClick = function()
+      if not self.view:GetObject("OpenFileTabBar").ChildOffset then
+        self.view:GetObject("OpenFileTabBar").ChildOffset = {X = 0, Y = 0}
+      end
+      self.view:GetObject("OpenFileTabBar").ChildOffset.X = self.view:GetObject("OpenFileTabBar").ChildOffset.X + 1
+    end
+    
+    self.view:GetObject("ForwardScroller").OnClick = function()
+      if not self.view:GetObject("OpenFileTabBar").ChildOffset then
+        self.view:GetObject("OpenFileTabBar").ChildOffset = {X = 0, Y = 0}
+      end
+      self.view:GetObject("OpenFileTabBar").ChildOffset.X = self.view:GetObject("OpenFileTabBar").ChildOffset.X - 1
     end
     
     local draggingLeftToolBar = false
@@ -151,6 +202,7 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("LeftToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
+        self.view:GetObject("OpenFileTabBarHolder"):OnUpdate()
         
         return true
       end
@@ -165,6 +217,7 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("RightToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
+        self.view:GetObject("OpenFileTabBarHolder"):OnUpdate()
         
         return true
       end
@@ -179,6 +232,7 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("BottomToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
+        self.view:GetObject("OpenFileTabBarHolder"):OnUpdate()
         
         return true
       end
@@ -267,21 +321,85 @@ function ProjectViewScene(program)
     },
     
     ["FileViewer"] = {
-      -- called when a file open event is fired
-      -- canOpenFile : a 'function' typed parameter which receives a file path and returns a boolean
-      -- getViewOnFileOpen: a 'function' typed parameter which returns a Bedrock view
+      ["addOnFileEventListener"] = function(listener)
+        table.insert(onFileEventListeners, listener)
+      end,
+      ["removeOnFileEventListener"] = function(listener)
+        table.remove(onFileEventListeners, listener)
+      end,
+      ["removeOnFileEventListeners"] = function()
+        onFileEventListeners = {}
+      end,
+      
       ["addViewer"] = function(viewer)
         table.insert(fileViewers, viewer)
         return viewer
       end,
       ["getViewer"] = function(name)
-        return currentFileViewer
+        local viewer = nil
+        for k, v in pairs(fileViewers) do
+          if v.getName() == name then
+            viewer = v
+            break
+          end
+        end
+        
+        return viewer
       end,
       ["getOpenFileViewer"] = function()
         return currentFileViewer
       end,
+      ["closeFile"] = function(viewer)
+        
+      end,
       ["openFile"] = function(path, viewer)
+        local function selectTab(_path)
+          local tabBar = self.view:GetObject("OpenFileTabBar")
+          for k, v in pairs(tabBar.Children) do
+            v.Toggle = (v.Path == _path)
+          end  
+        end
+        
+        local function isTabAlreadyAdded(_path)
+          local tabBar = self.view:GetObject("OpenFileTabBar")
+          for k, v in pairs(tabBar.Children) do
+            if v.Path == _path then
+              return true
+            end
+          end
+          
+          return false
+        end
+        
+        local function addOpenFileTab(_path)
+          local tabBar = self.view:GetObject("OpenFileTabBar")
+          local lastX = 0
+          local lastWidth = 1
+          for k, v in pairs(tabBar.Children) do
+            if v.X > lastX then
+              lastX = v.X
+              lastWidth = v.Width
+            end
+          end
+          
+          local fileName = fs.getName(_path)
+          local label = " "..fileName.." x"
+          Logger.log(fileName)
+          tabBar:AddObject({
+            Type = "Button",
+            Text = label,
+            X = lastX + lastWidth,
+            Width = #label,
+            Path = _path,
+            Toggle = true,
+            OnClick = function(_self)
+              self.getComponent("FileViewer").openFile(_self.Path)
+            end
+          })
+        end
+        
         if viewer ~= currentFileViewer and (currentFileViewer ~= nil and currentFileViewer.getOpenFilePath() == path) then
+          selectTab(currentFileViewer.getOpenFilePath())
           return
         end
       
@@ -309,6 +427,17 @@ function ProjectViewScene(program)
           self.view:GetObject("FileView"):RemoveAllObjects()
           self.view:GetObject("FileView"):AddObject(currentFileViewer.getView())
           self.view:GetObject("FileView"):OnUpdate()
+          
+          
+          if not isTabAlreadyAdded(path) then
+            addOpenFileTab(path)
+          end
+          
+          selectTab(path)
+          
+          for k, v in pairs(onFileEventListeners) do
+            if v.onFileOpen then v.onFileOpen(path) end
+          end
         end
       end,
       ["saveOpenFile"] = function()
@@ -357,6 +486,6 @@ function ProjectViewScene(program)
     }
     
   })
-  
+
   return self
 end

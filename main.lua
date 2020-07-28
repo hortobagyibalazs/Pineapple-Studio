@@ -95,6 +95,7 @@ program.sharedPreferences = SharedPreferences(program.ProgramPath.."/Config/pref
 program.sceneManager = SceneManager(program)
 program.projectManager = ProjectManager(program)
 program.extensionManager = ExtensionManager(program)
+program.themeManager = ThemeManager(program)
 
 for k, extension in pairs(extensions) do
   program.extensionManager.addExtension(extension)
@@ -106,6 +107,11 @@ end
 
 program.sharedPreferences.read()
 program.sharedPreferences.edit("firstRun", false)
+
+program.themeManager.loadTheme("pineapple")
+program.OnDraw = function(self)
+  self.themeManager.applyTheme(self.View)
+end
 
 -- Enter program's main loop
 program:Run(function()
@@ -123,8 +129,8 @@ program:Run(function()
     end
   end]]
   
-  --program.sceneManager.setScene(MainMenuScene(program))
+  program.sceneManager.setScene(MainMenuScene(program))
   
-  local project = Project("System/Projects/", "Appstore.program")
-  program.projectManager.open(project)
+  --[[local project = Project("System/Projects/", "Appstore.program")
+  program.projectManager.open(project)]]
 end)

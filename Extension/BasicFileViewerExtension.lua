@@ -38,9 +38,7 @@ function BasicFileViewer(scene)
           Type = "Label",
           Text = tostring(i)..":",
           X = 1,
-          Align = "Right",
-          TextColour = codeBox.Style.ident.tc,
-          BackgroundColour = codeBox.Style.background
+          Align = "Right"
         })
       end
       
@@ -97,7 +95,6 @@ function BasicFileViewer(scene)
       Y = 1,
       Width = 0,
       RelativeHeight = "100%",
-      BackgroundColour = "gray",
       ItemMargin = 0
     }
     
@@ -136,8 +133,9 @@ function BasicFileViewerExtension()
     
       local codeBox = fileViewer.getObject("RootView"):GetObject("CodeBox")
     
-      local tbl = projectSettings.getOrDefault("Files", {})
-      tbl[viewer.getOpenFilePath()] = {
+      local values = projectSettings.read()
+      local tbl = values.Files
+      tbl[fileViewer.getOpenFileViewer().getOpenFilePath()] = {
         OffsetX = codeBox.TextOffset.X,
         OffsetY = codeBox.TextOffset.Y,
         CursorX = codeBox.CursorPos.X,
@@ -145,7 +143,7 @@ function BasicFileViewerExtension()
       }
 
       projectSettings.edit("Files", tbl)  
-    end, 3)
+    end, 1)
   end
   
   function self.onSceneUnload()

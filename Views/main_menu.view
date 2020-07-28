@@ -26,36 +26,28 @@
       Text = "Create",
       X = "75%,-4",
       Y = 12,
-      BackgroundColour = "transparent",
-      ActiveBackgroundColour = "transparent",
-      ActiveTextColour = "orange"
+      Style = "Flat"
     },
     {
       Type = "Button",
       Text = "Open",
       X = "75%,-3",
       Y = 14,
-      BackgroundColour = "transparent",
-      ActiveBackgroundColour = "transparent",
-      ActiveTextColour = "orange"
+      Style = "Flat"
     },
     {
       Type = "Button",
       Text = "Settings",
       X = "75%,-5",
       Y = 16,
-      BackgroundColour = "transparent",
-      ActiveBackgroundColour = "transparent",
-      ActiveTextColour = "orange"
+      Style = "Flat"
     },
     {
       Type = "Button",
       Text = "Quit",
       X = "75%,-3",
       Y = 18,
-      BackgroundColour = "transparent",
-      ActiveBackgroundColour = "transparent",
-      ActiveTextColour = "orange"
+      Style = "Flat"
     },
     {
       Type = "Separator",
@@ -63,7 +55,6 @@
       Y = 2,
       Width = 1,
       Height = "100%,-2",
-      Colour = "lightGrey"
     },
     {
       Name = "ProjectsListView",
@@ -73,6 +64,5 @@
       Width = "50%,-3",
       Height = "100%,-2"
     }
-  },
-  BackgroundColour = "white"
+  }
 }

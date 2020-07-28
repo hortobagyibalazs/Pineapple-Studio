@@ -7,16 +7,47 @@
       Y = 1,
       Width = "100%",
       Height = 1,
-      BackgroundColour = "lightGray"
-      },
+      Style = "MenuBar"
+    },
     {
       Name = "FileView",
       Type = "View",
       X = 1,
+      Y = 3,
+      Width = "100%",
+      Height = "100%,-2"
+    },
+    {
+      Name = "OpenFileTabBarHolder",
+      Type = "View",
+      X = 1,
       Y = 2,
       Width = "100%",
-      Height = "100%,-1",
-      BackgroundColour = "white"
+      Height = 1,
+      Children = {
+        {
+          Name = "BackScroller",
+          Type = "Button",
+          Text = "<",
+          X = 1,
+          Y = 1,
+          Width = 1
+        },
+        {
+          Name = "ForwardScroller",
+          Type = "Button",
+          Text = ">",
+          RelativeX = "100%",
+          Y = 1,
+          Width = 1
+        },
+        {
+          Name = "OpenFileTabBar",
+          Type = "View",
+          X = 2,
+          RelativeWidth = "100%,-2",
+        }
+      },
     },
     {
       Name = "LeftToolBar",
@@ -25,7 +56,7 @@
       Y = 2,
       Width = 1,
       Height = "100%,-1",
-      BackgroundColour = "gray",
+      Style = "ResizableToolBar",
       Children = {
         {
           Name = "LeftToolBarResizeDraggable",
@@ -34,7 +65,8 @@
           X = "100%",
           Y = "50%",
           RelativeX = "100%",
-          Height = 3
+          Height = 3,
+          Style = "ResizableToolBarDraggable"
         },
         {
           Type = "View",
@@ -43,8 +75,7 @@
           Y = 2,
           Width = "100%,-1",
           Height = "100%,-1",
-          RelativeWidth = "100%,-1",
-          BackgroundColour = "lightGray"
+          RelativeWidth = "100%,-1"
         }
       }
     },
@@ -55,7 +86,7 @@
       Y = 2,
       Width = 1,
       Height = "100%,-1",
-      BackgroundColour = "gray",
+      Style = "ResizableToolBar",
       Children = {
         {
           Name = "RightToolBarResizeDraggable",
@@ -63,7 +94,8 @@
           Text = "=",
           X = 1,
           Y = "50%",
-          Height = 3
+          Height = 3,
+          Style = "ResizableToolBarDraggable"
         },
         {
           Type = "View",
@@ -72,19 +104,18 @@
           Y = 2,
           Width = "100%,-1",
           Height = "100%,-1",
-          RelativeWidth = "100%,-1",
-          BackgroundColour = "lightGray"
+          RelativeWidth = "100%,-1"
         }
       }
     },
-        {
+    {
       Name = "BottomToolBar",
       Type = "View",
       X = 1,
       Y = "100%",
       Width = "100%",
       Height = 1,
-      BackgroundColour = "gray",
+      Style = "ResizableToolBar",
       Children = {
         {
           Name = "BottomToolBarResizeDraggable",
@@ -92,7 +123,8 @@
           Text = "=",
           X = "50%",
           Y = 1,
-          Height = Width
+          Height = Width,
+          Style = "ResizableToolBarDraggable"
         },
         {
           Type = "View",
@@ -101,11 +133,9 @@
           Y = 2,
           Width = "100%",
           Height = "100%,-1",
-          RelativeHeight = "100%,-1",
-          BackgroundColour = "lightGray"
+          RelativeHeight = "100%,-1"
         }
       }
     }
   },
-  BackgroundColour = "white"
 }
