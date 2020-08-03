@@ -108,7 +108,9 @@ end
 program.sharedPreferences.read()
 program.sharedPreferences.edit("firstRun", false)
 
-program.themeManager.loadTheme("pineapple")
+local defaultTheme = "light"
+local theme = program.sharedPreferences.getOrDefault("theme", defaultTheme)
+program.themeManager.loadTheme(theme)
 program.OnDraw = function(self)
   self.themeManager.applyTheme(self.View)
 end
@@ -129,8 +131,8 @@ program:Run(function()
     end
   end]]
   
-  program.sceneManager.setScene(MainMenuScene(program))
+  --program.sceneManager.setScene(MainMenuScene(program))
   
-  --[[local project = Project("System/Projects/", "Appstore.program")
-  program.projectManager.open(project)]]
+  local project = Project("/System/Projects", "Appstore.program")
+  program.projectManager.open(project)
 end)

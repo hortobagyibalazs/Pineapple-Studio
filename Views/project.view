@@ -6,136 +6,162 @@
       X = 1,
       Y = 1,
       Width = "100%",
-      Height = 1,
-      Style = "MenuBar"
-    },
-    {
-      Name = "FileView",
-      Type = "View",
-      X = 1,
-      Y = 3,
-      Width = "100%",
-      Height = "100%,-2"
-    },
-    {
-      Name = "OpenFileTabBarHolder",
-      Type = "View",
-      X = 1,
-      Y = 2,
-      Width = "100%",
-      Height = 1,
+      Height = 3,
+      Style = "MenuBar",
       Children = {
         {
-          Name = "BackScroller",
-          Type = "Button",
-          Text = "<",
-          X = 1,
-          Y = 1,
-          Width = 1
+          Name = "MenuBarSearchBox",
+          Type = "TextBox",
+          X = "70%",
+          Y = 2,
+          Width = "30%,-1",
+          Placeholder = "Search...",
+          Style = "MenuBarSearch"
         },
         {
-          Name = "ForwardScroller",
-          Type = "Button",
-          Text = ">",
-          RelativeX = "100%",
-          Y = 1,
-          Width = 1
-        },
-        {
-          Name = "OpenFileTabBar",
+          Name = "OpenFileTabBarHolder",
           Type = "View",
           X = 2,
-          RelativeWidth = "100%,-2",
+          Y = 2,
+          Width = "70%,-4",
+          Style = "MenuBar",
+          Children = {
+            {
+              Name = "BackScroller",
+              Type = "Button",
+              X = 1,
+              Width = 1,
+              Text = "<",
+              Style = "OpenFileTabScroller"
+            },
+            {
+              Name = "ForwardScroller",
+              Type = "Button",
+              X = "100%",
+              Width = 1,
+              Text = ">",
+              Style = "OpenFileTabScroller"
+            },
+            {
+              Name = "OpenFileTabBar",
+              Type = "View",
+              X = 2,
+              Width = "100%,-2",
+              Style = "MenuBar"
+            }
+          }
         }
-      },
+      }
     },
     {
-      Name = "LeftToolBar",
+      Name = "ProjectView",
       Type = "View",
       X = 1,
-      Y = 2,
-      Width = 1,
-      Height = "100%,-1",
-      Style = "ResizableToolBar",
+      Y = 4,
+      Width = "100%",
+      Height = "100%,-3",
       Children = {
         {
-          Name = "LeftToolBarResizeDraggable",
-          Type = "Label",
-          Text = "=",
+          Name = "FileView",
+          Type = "View",
+          X = 1,
+          Y = 1,
+          Width = "100%,-2",
+          Height = "100%,-1"
+        },
+        {
+          Name = "LeftToolBar",
+          Type = "View",
+          X = 1,
+          Y = 1,
+          Width = 1,
+          Height = "100%",
+          Style = "ResizableToolBar",
+          Children = {
+            {
+              Name = "LeftToolBarResizeDraggable",
+              Type = "Label",
+              Text = "=",
+              X = "100%",
+              Y = "50%",
+              RelativeX = "100%",
+              Height = 3,
+              Style = "ResizableToolBarDraggable"
+            },
+            {
+              Type = "View",
+              Name = "LeftToolBarContentView",
+              X = 1,
+              Y = 2,
+              Width = "100%,-1",
+              Height = "100%,-1",
+              RelativeWidth = "100%,-1",
+              Style = "ToolBarContent"
+            }
+          }
+        },
+        {
+          Name = "RightToolBar",
+          Type = "View",
           X = "100%",
-          Y = "50%",
-          RelativeX = "100%",
-          Height = 3,
-          Style = "ResizableToolBarDraggable"
-        },
-        {
-          Type = "View",
-          Name = "LeftToolBarContentView",
-          X = 1,
-          Y = 2,
-          Width = "100%,-1",
-          Height = "100%,-1",
-          RelativeWidth = "100%,-1"
-        }
-      }
-    },
-    {
-      Name = "RightToolBar",
-      Type = "View",
-      X = "100%",
-      Y = 2,
-      Width = 1,
-      Height = "100%,-1",
-      Style = "ResizableToolBar",
-      Children = {
-        {
-          Name = "RightToolBarResizeDraggable",
-          Type = "Label",
-          Text = "=",
-          X = 1,
-          Y = "50%",
-          Height = 3,
-          Style = "ResizableToolBarDraggable"
-        },
-        {
-          Type = "View",
-          Name = "RightToolBarContentView",
-          X = 2,
-          Y = 2,
-          Width = "100%,-1",
-          Height = "100%,-1",
-          RelativeWidth = "100%,-1"
-        }
-      }
-    },
-    {
-      Name = "BottomToolBar",
-      Type = "View",
-      X = 1,
-      Y = "100%",
-      Width = "100%",
-      Height = 1,
-      Style = "ResizableToolBar",
-      Children = {
-        {
-          Name = "BottomToolBarResizeDraggable",
-          Type = "Label",
-          Text = "=",
-          X = "50%",
           Y = 1,
-          Height = Width,
-          Style = "ResizableToolBarDraggable"
+          Width = 1,
+          Height = "100%",
+          Style = "ResizableToolBar",
+          Children = {
+            {
+              Name = "RightToolBarResizeDraggable",
+              Type = "Label",
+              Text = "=",
+              X = 1,
+              Y = "50%",
+              Height = 3,
+              Style = "ResizableToolBarDraggable"
+            },
+            {
+              Type = "View",
+              Name = "RightToolBarContentView",
+              X = 2,
+              Y = 2,
+              Width = "100%,-1",
+              Height = "100%,-1",
+              RelativeWidth = "100%,-1",
+              Style = "ToolBarContent"
+            }
+          }
         },
         {
+          Name = "BottomToolBar",
           Type = "View",
-          Name = "BottomToolBarContentView",
           X = 1,
-          Y = 2,
+          Y = "100%",
           Width = "100%",
-          Height = "100%,-1",
-          RelativeHeight = "100%,-1"
+          Height = 1,
+          Style = "ResizableToolBar",
+          Children = {
+            {
+              Name = "BottomToolBarResizeDraggable",
+              Type = "Label",
+              Text = "=",
+              X = "50%",
+              Y = 1,
+              Height = Width,
+              Style = "ResizableToolBarDraggable"
+            },
+            {
+              Type = "View",
+              Name = "BottomToolBarContentView",
+              X = 1,
+              Y = 2,
+              Width = "100%",
+              Height = "100%,-1",
+              RelativeHeight = "100%,-1",
+              Style = "ToolBarContent"
+            }
+          }
         }
       }
     }
   },
+  BackgroundColour = "white"
 }

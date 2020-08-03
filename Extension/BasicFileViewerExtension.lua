@@ -31,18 +31,42 @@ function BasicFileViewer(scene)
       local begValue = codeBox.TextOffset.Y + 1
       local endValue = math.min(codeBox.TextOffset.Y + #codeBox.Text, codeBox.TextOffset.Y + codeBox.Height)
       
-      list.Items = {}
-      list.Width = #tostring(endValue)+1
-      for i = begValue, endValue do
-        table.insert(list.Items, {
-          Type = "Label",
-          Text = tostring(i)..":",
-          X = 1,
-          Align = "Right"
-        })
-      end
+        list.Items = {}
+        list.Width = #tostring(endValue)+1
+        for i = begValue, endValue do
+          table.insert(list.Items, {
+            Type = "Label",
+            Text = tostring(i)..":",
+            X = 1,
+            Align = "Right"
+          })
+        end
       
       codeBox.X = list.X + list.Width
+    end
+    
+    local function updateScrollBars(root)
+      if root == nil then
+        root = scene.getComponent("FileViewer").getObject("RootView")
+      end
+      
+      local vertical = root:GetObject("CodeBoxVerticalScrollBar")
+      local horizontal = root:GetObject("CodeBoxHorizontalScrollBar")
+      
+      local codeBox = root:GetObject("CodeBox")
+      
+      vertical.Scroll = codeBox.TextOffset.Y
+      vertical.MaxScroll = #codeBox.Text - codeBox.Height
+      
+      local longestLine = 0
+      for k, v in pairs(codeBox.Text) do
+        if #v > longestLine then
+          longestLine = #v
+        end
+      end
+      
+      horizontal.Scroll = codeBox.TextOffset.X
+      horizontal.MaxScroll = longestLine - codeBox.Width
     end
     
     local codeBox = {
@@ -50,7 +74,7 @@ function BasicFileViewer(scene)
       Type = "CodeBox",
       X = 1,
       Y = 1,
-      RelativeWidth = "100%,-1",
+      RelativeWidth = "100%,-3",
       RelativeHeight = "100%,-1",
       OnLoad = function(_self)
         _self:Reset()
@@ -58,15 +82,24 @@ function BasicFileViewer(scene)
         local filePath = self.getOpenFilePath()
         local ps = scene.getComponent("ProjectManager").obtain().getProject().getProjectSettings()
         local values = ps.read()
-        local data = values.Files[filePath]
+        local data = nil
+        
+        if values and values.Files then 
+          data = values.Files[filePath] 
+        end
         
         if data ~= nil then
           _self.TextOffset.X = data.OffsetX
           _self.TextOffset.Y = data.OffsetY
           _self.CursorPos.X = data.CursorX
           _self.CursorPos.Y = data.CursorY
-          _self.Bedrock:SetActiveObject(_self)
+        else
+          _self.TextOffset.X = 0
+          _self.TextOffset.Y = 0
+          _self.CursorPos.X = 1
+          _self.CursorPos.Y = 1
         end
+        _self.Bedrock:SetActiveObject(_self)
 
         Logger.log("BasicFileViewerExtension: Get file content from "..filePath)
         for line in io.lines(filePath) do
@@ -79,11 +112,14 @@ function BasicFileViewer(scene)
         _self:AddOnTextChangeListener(function(__self, range)
             lastContentChangeTime = os.clock()
           __self.Tokens.parseCode(tableToString(__self.Text))
-          updateLineNumbers()
+                    
+          pcall(updateLineNumbers)
+          pcall(updateScrollBars)
         end)
       
         _self.OnTextOffsetChange = function(__self)
-          updateLineNumbers()
+          pcall(updateLineNumbers)
+          pcall(updateScrollBars)
         end
       end
     }
@@ -98,6 +134,35 @@ function BasicFileViewer(scene)
       ItemMargin = 0
     }
     
+    local verticalScrollBar = {
+      Name = "CodeBoxVerticalScrollBar",
+      Type = "AdvancedScrollBar",
+      RelativeX = "100%",
+      Y = 1,
+      RelativeHeight = "100%,-1",
+      Width = 1,
+      OnChange = function(_self)
+        local codeBox = scene.getComponent("FileViewer").getObject("RootView"):GetObject("CodeBox")
+        codeBox.TextOffset.Y = _self.Scroll
+        codeBox:OnTextOffsetChange()
+      end
+    }
+    
+    local horizontalScrollBar = {
+      Name = "CodeBoxHorizontalScrollBar",
+      Type = "AdvancedScrollBar",
+      X = 1,
+      RelativeY = "100%",
+      RelativeWidth = "100%,-1",
+      Height = 1,
+      Vertical = false,
+      OnChange = function(_self)
+        local codeBox = scene.getComponent("FileViewer").getObject("RootView"):GetObject("CodeBox")
+        codeBox.TextOffset.X = _self.Scroll
+        codeBox:OnTextOffsetChange()
+      end
+    }
+    
     return {
       Name = "RootView",
       Type = "ScrollView",
@@ -105,9 +170,13 @@ function BasicFileViewer(scene)
       Y = 1,
       RelativeWidth = "100%",
       RelativeHeight = "100%",
-      Children = {codeBox, lineNumbersListView},
+      Children = {codeBox, lineNumbersListView, verticalScrollBar, horizontalScrollBar},
       OnLoad = function(_self)
         updateLineNumbers(_self)
+      end,
+      OnUpdate = function(_self)
+         pcall(updateLineNumbers, _self)
+         pcall(updateScrollBars, _self)
       end
     }
   end
@@ -135,6 +204,7 @@ function BasicFileViewerExtension()
     
       local values = projectSettings.read()
       local tbl = values.Files
+      if tbl == nil then tbl = {} end
       tbl[fileViewer.getOpenFileViewer().getOpenFilePath()] = {
         OffsetX = codeBox.TextOffset.X,
         OffsetY = codeBox.TextOffset.Y,

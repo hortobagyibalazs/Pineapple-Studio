@@ -1,3 +1,4 @@
 {
+  theme = "pineapple",
   firstRun = false,
 }

@@ -1,4 +1,6 @@
 {
+  Type = "View",
+  BackgroundColour = "white",
   Children = {
     {
       Name = "LogoView",
@@ -54,7 +56,7 @@
       X = "50%",
       Y = 2,
       Width = 1,
-      Height = "100%,-2",
+      Height = "100%,-2"
     },
     {
       Name = "ProjectsListView",

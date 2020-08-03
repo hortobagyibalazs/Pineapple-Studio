@@ -33,7 +33,7 @@ function ProjectViewScene(program)
         end
       end
     end
-    
+        
     local defaultFileViewAttributes = {
       self.view:GetObject("FileView").X,
       self.view:GetObject("FileView").Y,
@@ -62,53 +62,20 @@ function ProjectViewScene(program)
       resizeChildren(_self)
     end
     
-    local defaultOpenFileTabBarAttributes = {
-      self.view:GetObject("OpenFileTabBarHolder").X,
-      self.view:GetObject("OpenFileTabBarHolder").Y,
-      self.view:GetObject("OpenFileTabBarHolder").Width,
-      self.view:GetObject("OpenFileTabBarHolder").Height,
-    }
-    
-    self.view:GetObject("OpenFileTabBarHolder").OnUpdate = function(_self)
-      local width = _self.Width
-      
-      if self.view:GetObject("LeftToolBar").Visible then
-        _self.X = defaultOpenFileTabBarAttributes[1] + self.view:GetObject("LeftToolBar").X + self.view:GetObject("LeftToolBar").Width - 1
-        width = program.View.Width - _self.X + 1
-      end
-      
-      if self.view:GetObject("RightToolBar").Visible then
-        width = width - self.view:GetObject("RightToolBar").Width
-      end
-      _self.Width = width
-      
-      local tabBar = self.view:GetObject("OpenFileTabBar")
-      local childOffset = 0
-      if tabBar.ChildOffset then
-        if tabBar.ChildOffset.X < 0 then
-          tabBar.ChildOffset.X = 0
-        end
-        
-        childOffset = tabBar.ChildOffset.X
-      end
-      
-      self.view:GetObject("BackScroller").Visible = (childOffset == 0)
-      
-      resizeChildren(_self)
-    end
-    
     self.view:GetObject("BackScroller").OnClick = function()
-      if not self.view:GetObject("OpenFileTabBar").ChildOffset then
-        self.view:GetObject("OpenFileTabBar").ChildOffset = {X = 0, Y = 0}
+      local tabBar = self.view:GetObject("OpenFileTabBar")
+      if not tabBar.ChildOffset then
+        tabBar.ChildOffset = {X = 0, Y = 0}
       end
-      self.view:GetObject("OpenFileTabBar").ChildOffset.X = self.view:GetObject("OpenFileTabBar").ChildOffset.X + 1
+      tabBar.ChildOffset.X = tabBar.ChildOffset.X + 1
     end
     
     self.view:GetObject("ForwardScroller").OnClick = function()
-      if not self.view:GetObject("OpenFileTabBar").ChildOffset then
-        self.view:GetObject("OpenFileTabBar").ChildOffset = {X = 0, Y = 0}
+      local tabBar = self.view:GetObject("OpenFileTabBar")
+      if not tabBar.ChildOffset then
+        tabBar.ChildOffset = {X = 0, Y = 0}
       end
-      self.view:GetObject("OpenFileTabBar").ChildOffset.X = self.view:GetObject("OpenFileTabBar").ChildOffset.X - 1
+      tabBar.ChildOffset.X = tabBar.ChildOffset.X - 1
     end
     
     local draggingLeftToolBar = false
@@ -202,7 +169,6 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("LeftToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
-        self.view:GetObject("OpenFileTabBarHolder"):OnUpdate()
         
         return true
       end
@@ -217,22 +183,19 @@ function ProjectViewScene(program)
         resizeChildren(self.view:GetObject("RightToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
-        self.view:GetObject("OpenFileTabBarHolder"):OnUpdate()
         
         return true
       end
       
       if draggingBottomToolBar then
-        if (y <= self.view:GetObject("MenuBar").X + self.view:GetObject("MenuBar").Height - 1) then
-          y = self.view:GetObject("MenuBar").X + self.view:GetObject("MenuBar").Height
-        end
-        
-        self.view:GetObject("BottomToolBar").Y = y
-        self.view:GetObject("BottomToolBar").Height = self.view.Height - self.view:GetObject("BottomToolBar").Y + 1
+        local contentView = self.view:GetObject("ProjectView")
+        local newY = y - contentView.Y + 1
+        if newY < 1 then newY = 1 end
+        self.view:GetObject("BottomToolBar").Y = newY
+        self.view:GetObject("BottomToolBar").Height = contentView.Height - self.view:GetObject("BottomToolBar").Y + 1
         resizeChildren(self.view:GetObject("BottomToolBar"))
         
         self.view:GetObject("FileView"):OnUpdate()
-        self.view:GetObject("OpenFileTabBarHolder"):OnUpdate()
         
         return true
       end

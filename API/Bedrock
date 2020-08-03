@@ -21,6 +21,7 @@ end
 
 local _w, _h = term.getSize()
 local copyBuffer = nil  
+local sortedBuffer = nil
 
 Screen = {
 	Width = _w,
@@ -369,13 +370,44 @@ end
 
 Buffer = {}
 BackBuffer = {}
+RenderBuffer = {}
 
 TryRestore = false
+OptimizedRendering = true
 
+AddPixelToRenderBuffer = function(pixel)
+  table.insert(Drawing.RenderBuffer, pixel)
+end
+
+SortRenderBuffer = function()
+  table.sort(Drawing.RenderBuffer, function(p1, p2)
+    return p1.bg < p2.bg
+  end)
+end
+
+DrawRenderBuffer = function()
+  local lastBg = term.getBackgroundColour()
+  local lastTc = term.getTextColour()
+  for k, pixel in pairs(Drawing.RenderBuffer) do
+    if lastBg ~= pixel.bg then
+      term.setBackgroundColour(pixel.bg)
+      lastBg = pixel.bg
+    end
+    if lastTc ~= pixel.tc then
+      term.setTextColour(pixel.tc)
+      lastTc = pixel.tc
+    end
+    term.setCursorPos(pixel.xPos, pixel.yPos)
+    term.write(pixel.char)
+  end
+  
+  Drawing.RenderBuffer = {}
+end
 
 --TODO: make this quicker
 -- maybe sort the pixels in order of colour so it doesn't have to set the colour each time
 DrawBuffer = function()
+  local s = os.clock()
 	if TryRestore and Restore then
 		Restore()
 	end
@@ -391,13 +423,29 @@ DrawBuffer = function()
 				shouldDraw = false
 			end
 			if shouldDraw then
-				term.setBackgroundColour(pixel[3])
-				term.setTextColour(pixel[2])
-				term.setCursorPos(x, y)
-				term.write(pixel[1])
+        if Drawing.OptimizedRendering then
+          Drawing.AddPixelToRenderBuffer({
+            char = pixel[1],
+            tc = pixel[2],
+            bg = pixel[3],
+            xPos = x,
+            yPos = y
+          })
+        else
+          term.setBackgroundColour(pixel[3])
+          term.setTextColour(pixel[2])
+          term.setCursorPos(x, y)
+          term.write(pixel[1])
+        end
 			end
 		end
 	end
+  
+  if Drawing.OptimizedRendering then
+    Drawing.SortRenderBuffer()
+    Drawing.DrawRenderBuffer()
+  end
+  
 	Drawing.BackBuffer = Drawing.Buffer
 	Drawing.Buffer = {}
 end

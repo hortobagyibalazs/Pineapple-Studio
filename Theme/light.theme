@@ -75,5 +75,16 @@
     Default = {
       HighlightColour = "lightGray"
     }
+  },
+  ScrollBar = {
+    Default = {
+      BarColour = "orange",
+      BackgroundColour = "transparent"
+    }
+  },
+  Separator = {
+    Default = {
+      Colour = "lightGray"
+    }
   }
 }

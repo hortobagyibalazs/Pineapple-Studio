@@ -18,7 +18,7 @@ HighlightSyntax = true
     ["unidentified"] = {["tc"] = colors.pink, ["bc"] = colors.white}
 }]]
 
-Style = {
+--[[Style = {
     ["highlight"] = colors.lightGray,
     ["background"] = colors.white,
     ["whitespace"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
@@ -32,7 +32,20 @@ Style = {
     ["symbol"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
     ["operator"] = {["tc"] = colors.black, ["bc"] = colors.transparent},
     ["unidentified"] = {["tc"] = colors.pink, ["bc"] = colors.white}
-}
+}]]
+
+HighlightColour = colors.lightBlue
+WhitespaceColour = colors.black
+CommentColour = colors.green
+StringColour = colors.red
+EscapeColour = colors.red
+KeywordColour = colors.blue
+ValueColour = colors.purple
+IdentColour = colors.black
+NumberColour = colors.blue
+SymbolColour = colors.black
+OperatorColour = colors.black
+UnidentifiedColour = colors.pink
 
 OnLoad = function(self)
   self:AddOnTextChangeListener(function(_self, range)
@@ -40,13 +53,9 @@ OnLoad = function(self)
   end)
 end
 
-OnUpdate = function(self)
-  self.BackgroundColour = self.Style.background
-end
-
 DrawText = function(self, x, y)
   if self.CursorPos ~= nil and self.CursorPos.Y ~= nil and self.CursorPos.Y ~= 0 then
-    Drawing.DrawBlankArea(x, y+self.CursorPos.Y-1-self.TextOffset.Y, self.Width, 1, self.Style.highlight)
+    Drawing.DrawBlankArea(x, y+self.CursorPos.Y-1-self.TextOffset.Y, self.Width, 1, self.HighlightColour)
   end
   
   local tokens = self.Tokens.getTokens()
@@ -56,17 +65,13 @@ DrawText = function(self, x, y)
       if line == nil then line = "" end
       line:sub(self.TextOffset.X)
         
-      Drawing.DrawCharacters(x, y + i - 1, line, self.TextColour, self.BackgroundColour)
+      Drawing.DrawCharacters(x, y + i - 1, line, self.IdentColour, self.BackgroundColour)
     end
     
     return
   end
 
   for i = 1, self.Height do
-    local line = self.Text[i + self.TextOffset.Y]
-    if line == nil then line = "" end
-    line = line:sub(self.TextOffset.X)
-    
     local tokensAtLine = self.Tokens.getTokenAt(i + self.TextOffset.Y)
     if tokensAtLine == nil then
       break
@@ -84,9 +89,11 @@ DrawText = function(self, x, y)
       
       local bc = self.BackgroundColour
       if i + self.TextOffset.Y == self.CursorPos.Y then
-        bc = self.Style.highlight
+        bc = self.HighlightColour
       end
-      Drawing.DrawCharacters(x + posFirst - 1, y + i - 1, data, self.Style[type]["tc"], bc)  
+      local colorVal = self[type:sub(1, 1):upper()..type:sub(2).."Colour"]
+      
+      Drawing.DrawCharacters(x + posFirst - 1 - self.TextOffset.X, y + i - 1, data, colorVal, bc)  
     end
   end
 end

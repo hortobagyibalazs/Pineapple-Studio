@@ -4,31 +4,13 @@
 -- ParentStyle: style automatically applied when parent has a specific style
 
 {
-  Palette = {
-    White = 0xF0F0F0,
-    Orange = 0xF2B233,
-    Magenta = 0xE57FD8,
-    LightBlue = 0x99B2F2,
-    Yellow = 0xDEDE6C,
-    Lime = 0x7FCC19,
-    Pink = 0xF2B2CC,
-    Gray = 0x4C4C4C,
-    LightGray = 0x999999,
-    Cyan = 0x406A8A,
-    Purple = 0xB266E5,
-    Blue = 0x3366CC,
-    Brown = 0x7F664C,
-    Green = 0x57A64E,
-    Red = 0xCC4C4C,
-    Black = 0x111111
-  },
   View = {
     Default = {
-      BackgroundColour = "white"
+      BackgroundColour = "gray"
     },
     MenuBar = {
       BackgroundColour = "gray"
-    }  
+    }
   },
   Label = {
     ResizableToolBarDraggable = {
@@ -45,7 +27,7 @@
     },
     Flat = {
       TextColour = "black",
-      ActiveTextColour = "cyan",
+      ActiveTextColour = "orange",
       DisabledTextColour = "lightGray",
       BackgroundColour = "transparent",
       ActiveBackgroundColour = "transparent",
@@ -56,11 +38,11 @@
       TextColour = "lightGray",
       ActiveTextColour = "white",
       BackgroundColour = "transparent",
-      ActiveBackgroundColour = "cyan",
+      ActiveBackgroundColour = "orange",
     },
     OpenFileTabScroller = {
       TextColour = "lightGray",
-      ActiveTextColour = "cyan",
+      ActiveTextColour = "orange",
       BackgroundColour = "transparent",
       ActiveBackgroundColour = "transparent"
     }
@@ -69,11 +51,6 @@
     MenuBarSearch = {
       TextColour = "gray",
       BackgroundColour = "lightGray"
-    }
-  },
-  CodeBox = {
-    Default = {
-      HighlightColour = "lightGray"
     }
   }
 }

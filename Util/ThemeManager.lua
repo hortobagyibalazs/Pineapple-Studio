@@ -14,6 +14,19 @@ function ThemeManager(program)
         theme = textutils.unserialize(f.readAll())
         if theme then
           Logger.log("ThemeManager: Loaded theme '"..name.."'")
+          
+          if theme["Palette"] and (term.setPaletteColor ~= nil) then
+            for colorName, colorVal in pairs(theme["Palette"]) do
+              local colorTbl = colors
+              local realColorName = colorName:sub(1, 1):lower()..colorName:sub(2)
+            
+              if colorTbl[realColorName] == nil and colours[realColorName] ~= nil then
+                colorTbl = colours
+              end
+              
+              term.setPaletteColor(colorTbl[realColorName], colorVal)
+            end
+          end
         else
           Logger.log("ThemeManager: Failed to load '"..name.."' theme. Probably file is incorrectly formatted.")
         end
@@ -56,13 +69,11 @@ function ThemeManager(program)
     if (not newTheme) or (not view) then return end
     
     if newTheme[view.Type] then
-      Logger.log("Found type")
       local defaultStyle = "Default"
       local viewStyle = view.Style
       
       local values = nil
       if newTheme[view.Type][viewStyle] then
-        Logger.log("Style applied for "..tostring(view.Name))
         values = newTheme[view.Type][viewStyle]
       else
         -- iterate through every style for a specific UI element
@@ -119,7 +130,7 @@ function ThemeManager(program)
       if values then
         applyValues(view, values)
       else
-        Logger.log(":(")
+        --Logger.log("Theme Manager: Failed to apply values for view :( ")
       end
     end
     

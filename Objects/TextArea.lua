@@ -19,8 +19,12 @@ OnDraw = function(self, x, y)
   self:DrawText(x, y)
   
   -- Display cursor if necessary
-  self.Bedrock.CursorPos = {x + self.CursorPos.X - self.TextOffset.X - 1, y + self.CursorPos.Y - self.TextOffset.Y - 1}
-  self.Bedrock.CursorColour = self.TextColour
+  if self.Bedrock:GetActiveObject() == self then
+    self.Bedrock.CursorPos = {x + self.CursorPos.X - self.TextOffset.X - 1, y + self.CursorPos.Y - self.TextOffset.Y - 1}
+    self.Bedrock.CursorColour = self.TextColour
+  else
+    self.CursorPos = {X = 0, Y = 0}
+  end
   self:UpdateCursorVisibility(x, y)
 end
 
@@ -43,7 +47,7 @@ UpdateCursorVisibility = function(self, x, y)
   local cursorX = self.CursorPos.X - self.TextOffset.X
   local cursorY = self.CursorPos.Y - self.TextOffset.Y
   
-  if 1 > cursorX or cursorX > self.Width or 1 > cursorY or cursorY > self.Height then
+  if self.Bedrock:GetActiveObject() == self and (1 > cursorX or cursorX > self.Width or 1 > cursorY or cursorY > self.Height) then
     self.Bedrock.CursorPos = nil
   end
 end
@@ -59,6 +63,16 @@ DrawText = function(self, x, y)
 end
 
 DoChange = function(self, range)
+  if self.CursorPos.X > self.Width + self.TextOffset.X then
+    self.TextOffset.X = self.CursorPos.X - self.Width
+  elseif self.CursorPos.X <= self.TextOffset.X then
+    self.TextOffset.X = self.CursorPos.X
+  end
+  
+  if self.CursorPos.Y > self.Height + self.TextOffset.Y then
+    self.TextOffset.Y = self.CursorPos.Y - self.Height
+  end
+  
   for k, v in pairs(self.OnTextChangeListeners) do
     if v ~= nil then
       v(self, range)
@@ -283,6 +297,9 @@ OnKeyChar = function(self, event, keychar)
       if line == nil then line = "" end
       
       self.CursorPos.X = #line + 1
+      if self.CursorPos.X > self.Width + self.TextOffset.X then
+        self.TextOffset.X = self.CursorPos.X - self.Width
+      end
     
       self:ForceDraw()
     elseif keychar == keys.home then
@@ -292,8 +309,12 @@ OnKeyChar = function(self, event, keychar)
       if self.CursorPos.X == 1 then
         local trimmedLine = ltrim(line)
         self.CursorPos.X = #line - #trimmedLine + 1
+        if self.CursorPos.X > self.Width + self.TextOffset.X then
+          self.TextOffset.X = self.CursorPos.X - self.Width
+        end
       else
         self.CursorPos.X = 1
+        self.TextOffset.X = 0
       end
     
       self:ForceDraw()
