@@ -7,9 +7,6 @@ An attempt at a fully functioning ComputerCraft IDE. It aims to provide a better
 ## Getting Started
 
 In order to start launch Pineapple Studio, you have to copy the content of this repository into a ComputerCraft device folder and execute `main.lua` by simply typing it into the ComputerCraft terminal.
-### Prerequisites
-
-What things you need to install the software and how to install them
 
 ## Features
 Although this project is not even close to finished, it already contains some essential features, most notably:
